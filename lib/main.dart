@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:android_notification_listener2/android_notification_listener2.dart';
+import 'notification_listener.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -17,13 +17,10 @@ Future<void> main() async {
   // e.g: notification icon
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('@mipmap/ic_launcher');
-  const InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid
-  );
-  await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onSelectNotification: onNotificationClick
-  );
+  const InitializationSettings initializationSettings =
+      InitializationSettings(android: initializationSettingsAndroid);
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: onNotificationClick);
 
   runApp(const LyricsGrabbr());
 }
@@ -61,9 +58,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   late AndroidNotificationListener _notifications;
-  late StreamSubscription<NotificationEventV2> _subscription;
+  late StreamSubscription<NotificationEvent> _subscription;
   BuildContext? permissionDialogCtx;
-  final List<NotificationEventV2> _notifs = [];
+  final List<NotificationEvent> _notifs = [];
   bool running = false;
 
   @override
@@ -96,43 +93,39 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   void showNotificationPermDialog() {
-      showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext buildCtx) {
-            permissionDialogCtx = buildCtx;
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext buildCtx) {
+          permissionDialogCtx = buildCtx;
 
-            return WillPopScope(
-              onWillPop: () {
-                SystemNavigator.pop();
-                return Future.value(false);
-              },
-              child: Expanded(
-                  child: AlertDialog(
-                      title: const Text(
-                          'Notifications Access Permission',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold
-                          ),
-                      ),
-                      content: const Text(
-                          'This app requires permission to listen to notifications to function properly. Please grant permission in the next screen.',
-                          style: TextStyle(
-                              color: Colors.blueGrey
-                          ),
-                      ),
-                      actions: [
-                        TextButton(
-                            onPressed: () async {
-                              await AndroidNotificationListener.openPermissionSettings();
-                            },
-                            child: const Text("OK")
-                        ),
-                      ],
-                  ),
+          return WillPopScope(
+            onWillPop: () {
+              SystemNavigator.pop();
+              return Future.value(false);
+            },
+            child: Expanded(
+              child: AlertDialog(
+                title: const Text(
+                  'Notifications Access Permission',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                content: const Text(
+                  'This app requires permission to listen to notifications to function properly. Please grant permission in the next screen.',
+                  style: TextStyle(color: Colors.blueGrey),
+                ),
+                actions: [
+                  TextButton(
+                      onPressed: () async {
+                        await AndroidNotificationListener
+                            .openPermissionSettings();
+                      },
+                      child: const Text("OK")),
+                ],
               ),
-            );
-          });
+            ),
+          );
+        });
   }
 
   Future<void> initPlatformState() async {
@@ -145,10 +138,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
-  void onData(NotificationEventV2 event) {
+  void onData(NotificationEvent event) {
     if (event.packageName == spotifyPackage) {
       // TODO: if the app is in the background, only update our notif
-      // if the app is in the foreground, update the notif, and 
+      // if the app is in the foreground, update the notif, and
       // fetch the new lyrics and display them.
       var song = event.packageText;
       var artist = event.packageMessage;
@@ -160,25 +153,25 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Future<void> sendNotification(String title, String body) async {
-    const AndroidNotificationDetails androidNotification = AndroidNotificationDetails(
-        "Lyrics",
-        "Lyrics",
-        importance: Importance.low,
-        priority: Priority.min,
-        showWhen: false,
-        ongoing: true,
-        playSound: false,
+    const AndroidNotificationDetails androidNotification =
+        AndroidNotificationDetails(
+      "Lyrics",
+      "Lyrics",
+      importance: Importance.low,
+      priority: Priority.min,
+      showWhen: false,
+      ongoing: true,
+      playSound: false,
     );
 
-    const NotificationDetails notificationDetails = NotificationDetails(
-        android: androidNotification
-    );
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotification);
 
     await flutterLocalNotificationsPlugin.show(
-        notificationId,
-        title,
-        body,
-        notificationDetails,
+      notificationId,
+      title,
+      body,
+      notificationDetails,
     );
   }
 
@@ -214,8 +207,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               leading: Text(entry.packageText),
               trailing: Text(entry.packageMessage),
             );
-          }
-        ),
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: running ? stopListening : startListening,
         tooltip: running ? 'Stop service' : "Start service",
