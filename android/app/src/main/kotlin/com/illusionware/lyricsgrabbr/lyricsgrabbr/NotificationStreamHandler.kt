@@ -35,11 +35,17 @@ class NotificationStreamHandler(private val context: Context) : StreamHandler {
       val packageMessage = intent.getStringExtra(NotificationListener.NOTIFICATION_PACKAGE_MESSAGE)
       val packageText = intent.getStringExtra(NotificationListener.NOTIFICATION_PACKAGE_TEXT)
       val packageExtra = intent.getStringExtra(NotificationListener.NOTIFICATION_PACKAGE_EXTRA)
+      val packageArt = intent.getStringExtra(NotificationListener.NOTIFICATION_PACKAGE_ART)
+      val packagePlaybackState = intent.getIntExtra(NotificationListener.NOTIFICATION_PACKAGE_PLAYBACK_STATE, -1)
+      val packageDuration = intent.getLongExtra(NotificationListener.NOTIFICATION_PACKAGE_DURATION, -1)
       val map = HashMap<String, Any>()
       map["packageName"] = packageName!!
       map["packageMessage"] = packageMessage!!
       map["packageText"] = packageText!!
       map["packageExtra"] = packageExtra!!
+      map["packageArt"] = packageArt!!
+      map["packagePlaybackState"] = packagePlaybackState
+      map["packageDuration"] = packageDuration
       eventSink?.success(map)
     }
   }

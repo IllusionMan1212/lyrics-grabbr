@@ -13,19 +13,32 @@ class NotificationException implements Exception {
   }
 }
 
-class NotificationEvent {
-  String packageMessage;
-  String packageName;
-  String packageExtra;
-  String packageText;
-  DateTime timeStamp;
+abstract class PlaybackState {
+  static const STATE_INVALID = -1;
+  static const STATE_PAUSED = 2;
+  static const STATE_PLAYING = 3;
+}
 
-  NotificationEvent({
+class NotificationEvent {
+  final String artist;
+  final String packageName;
+  final String packageExtra;
+  final String songTitle;
+  final String art;
+  final int playbackState;
+  final int duration;
+
+  final DateTime timeStamp;
+
+  const NotificationEvent({
     required this.packageName,
-    required this.packageMessage,
+    required this.artist,
     required this.timeStamp,
     required this.packageExtra,
-    required this.packageText
+    required this.songTitle,
+    required this.art,
+    required this.playbackState,
+    required this.duration
   });
 
   factory NotificationEvent.fromMap(Map<dynamic, dynamic> map) {
@@ -34,13 +47,20 @@ class NotificationEvent {
     String message = map['packageMessage'];
     String text = map['packageText'];
     String extra =  map['packageExtra'];
+    String icon = map['packageArt'];
+    int playbackState = map['packagePlaybackState'];
+    int duration = map['packageDuration'];
 
-    return NotificationEvent(packageName: name, packageMessage: message, timeStamp: time,packageText: text , packageExtra: extra);
-  }
-
-  @override
-  String toString() {
-    return "Notification Event \n Package Name: $packageName \n - Timestamp: $timeStamp \n - Package Message: $packageMessage";
+    return NotificationEvent(
+        packageName: name,
+        artist: message,
+        timeStamp: time,
+        songTitle: text,
+        packageExtra: extra,
+        art: icon,
+        playbackState: playbackState,
+        duration: duration
+    );
   }
 }
 

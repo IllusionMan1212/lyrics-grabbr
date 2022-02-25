@@ -13,8 +13,7 @@ const notificationId = 0;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // TODO: do the preconfiguration for the android notifications.
-  // e.g: notification icon
+  // TODO: change the default flutter icon to my own.
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('@mipmap/ic_launcher');
   const InitializationSettings initializationSettings =
@@ -143,17 +142,15 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       // TODO: if the app is in the background, only update our notif
       // if the app is in the foreground, update the notif, and
       // fetch the new lyrics and display them.
-      var song = event.packageText;
-      var artist = event.packageMessage;
-      sendNotification(song, artist);
+      sendNotification(event);
       setState(() {
         _notifs.add(event);
       });
     }
   }
 
-  Future<void> sendNotification(String title, String body) async {
-    const AndroidNotificationDetails androidNotification =
+  Future<void> sendNotification(NotificationEvent notification) async {
+    final AndroidNotificationDetails androidNotification =
         AndroidNotificationDetails(
       "Lyrics",
       "Lyrics",
@@ -162,15 +159,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       showWhen: false,
       ongoing: true,
       playSound: false,
+      largeIcon: ByteArrayAndroidBitmap.fromBase64String(notification.art),
     );
 
-    const NotificationDetails notificationDetails =
+    final NotificationDetails notificationDetails =
         NotificationDetails(android: androidNotification);
 
     await flutterLocalNotificationsPlugin.show(
       notificationId,
-      title,
-      body,
+      '${notification.songTitle} - ${notification.artist}',
+      'Tap to get lyrics',
       notificationDetails,
     );
   }
@@ -204,8 +202,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           itemBuilder: (BuildContext context, int idx) {
             final entry = _notifs[idx];
             return ListTile(
-              leading: Text(entry.packageText),
-              trailing: Text(entry.packageMessage),
+              leading: Text(entry.songTitle),
+              trailing: Text(entry.artist),
             );
           }),
       floatingActionButton: FloatingActionButton(
