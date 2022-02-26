@@ -9,6 +9,8 @@ import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity: FlutterActivity() {
+    private var streamHandler : NotificationStreamHandler? = null
+
     companion object {
         private const val ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"
         private const val EVENT_CHANNEL_NAME = "notifications.eventChannel"
@@ -32,12 +34,17 @@ class MainActivity: FlutterActivity() {
         }
 
         val eventChannel = EventChannel(flutterEngine.dartExecutor.binaryMessenger, EVENT_CHANNEL_NAME)
-        val streamHandler = NotificationStreamHandler(context)
+        streamHandler = NotificationStreamHandler(context)
         eventChannel.setStreamHandler(streamHandler)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        streamHandler?.cleanUp()
+    }
+
     private fun isPermissionGranted(): Boolean {
-        val packageName = context.packageName
+        val packageName = packageName
         val pkgs = NotificationManagerCompat.getEnabledListenerPackages(context)
         for (name in pkgs) {
             if (TextUtils.equals(packageName, name)) {

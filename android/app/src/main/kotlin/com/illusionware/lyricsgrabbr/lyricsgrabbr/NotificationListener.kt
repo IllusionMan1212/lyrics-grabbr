@@ -12,8 +12,8 @@ import android.service.notification.StatusBarNotification
 import org.json.JSONException
 import org.json.JSONObject
 import android.os.Bundle
-import android.util.Base64
-import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 
 /**
  * Notification listening service. Intercepts notifications if permission is given to do so.
@@ -49,10 +49,18 @@ class NotificationListener : NotificationListenerService() {
         val duration = mediaCtrl?.metadata?.getLong(MediaMetadata.METADATA_KEY_DURATION)?.div(1000)
         val playbackState = mediaCtrl?.playbackState?.state
 
-        val albumArt = mediaCtrl?.metadata?.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART)
-        val outputStream = ByteArrayOutputStream()
-        albumArt?.compress(Bitmap.CompressFormat.PNG, 75, outputStream)
-        val artB64 = Base64.encodeToString(outputStream.toByteArray(), Base64.NO_WRAP)
+        var albumArtPath = ""
+
+        if (sbn.packageName == "com.spotify.music") {
+            val albumArt = mediaCtrl?.metadata?.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART)
+            val tempArtFile = File(cacheDir, "albumart_temp.png")
+            tempArtFile.createNewFile()
+            val fileOutputStream = FileOutputStream(tempArtFile)
+            albumArt?.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)
+            fileOutputStream.flush()
+            fileOutputStream.close()
+            albumArtPath = tempArtFile.absolutePath
+        }
 
         // Retrieve package name to set as title.
         val packageName = sbn.packageName
@@ -60,14 +68,12 @@ class NotificationListener : NotificationListenerService() {
         val extras = sbn.notification.extras
         val packageMessage = extras?.getCharSequence(Notification.EXTRA_TEXT).toString()
         val packageText = extras?.getCharSequence("android.title").toString()
-        val packageExtra = convertBundleToJsonString(sbn.notification.extras)
         // Pass data from one activity to another.
         val intent = Intent(NOTIFICATION_INTENT)
         intent.putExtra(NOTIFICATION_PACKAGE_NAME, packageName)
         intent.putExtra(NOTIFICATION_PACKAGE_MESSAGE, packageMessage)
         intent.putExtra(NOTIFICATION_PACKAGE_TEXT, packageText)
-        intent.putExtra(NOTIFICATION_PACKAGE_EXTRA, packageExtra)
-        intent.putExtra(NOTIFICATION_PACKAGE_ART, artB64)
+        intent.putExtra(NOTIFICATION_PACKAGE_ART, albumArtPath)
         intent.putExtra(NOTIFICATION_PACKAGE_DURATION, duration)
         intent.putExtra(NOTIFICATION_PACKAGE_PLAYBACK_STATE, playbackState)
         sendBroadcast(intent)

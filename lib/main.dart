@@ -65,8 +65,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance?.addObserver(this);
-    initPlatformState();
     super.initState();
+    initPlatformState();
   }
 
   @override
@@ -103,7 +103,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               SystemNavigator.pop();
               return Future.value(false);
             },
-            child: Expanded(
               child: AlertDialog(
                 title: const Text(
                   'Notifications Access Permission',
@@ -122,7 +121,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       child: const Text("OK")),
                 ],
               ),
-            ),
           );
         });
   }
@@ -159,7 +157,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       showWhen: false,
       ongoing: true,
       playSound: false,
-      largeIcon: ByteArrayAndroidBitmap.fromBase64String(notification.art),
+      largeIcon: FilePathAndroidBitmap(notification.art),
     );
 
     final NotificationDetails notificationDetails =
@@ -167,7 +165,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     await flutterLocalNotificationsPlugin.show(
       notificationId,
-      '${notification.songTitle} - ${notification.artist}',
+      'Playing [${notification.songTitle}] By [${notification.artist}]',
       'Tap to get lyrics',
       notificationDetails,
     );

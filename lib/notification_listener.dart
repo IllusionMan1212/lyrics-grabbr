@@ -22,7 +22,6 @@ abstract class PlaybackState {
 class NotificationEvent {
   final String artist;
   final String packageName;
-  final String packageExtra;
   final String songTitle;
   final String art;
   final int playbackState;
@@ -34,7 +33,6 @@ class NotificationEvent {
     required this.packageName,
     required this.artist,
     required this.timeStamp,
-    required this.packageExtra,
     required this.songTitle,
     required this.art,
     required this.playbackState,
@@ -46,7 +44,6 @@ class NotificationEvent {
     String name = map['packageName'];
     String message = map['packageMessage'];
     String text = map['packageText'];
-    String extra =  map['packageExtra'];
     String icon = map['packageArt'];
     int playbackState = map['packagePlaybackState'];
     int duration = map['packageDuration'];
@@ -56,7 +53,6 @@ class NotificationEvent {
         artist: message,
         timeStamp: time,
         songTitle: text,
-        packageExtra: extra,
         art: icon,
         playbackState: playbackState,
         duration: duration
