@@ -13,9 +13,8 @@ const notificationId = 0;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // TODO: change the default flutter icon to my own.
   const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('@mipmap/ic_launcher');
+      AndroidInitializationSettings('@drawable/ic_notification');
   const InitializationSettings initializationSettings =
       InitializationSettings(android: initializationSettingsAndroid);
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
@@ -39,7 +38,7 @@ class LyricsGrabbr extends StatelessWidget {
     return MaterialApp(
       title: 'Lyrics Grabbr',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.purple,
       ),
       home: const HomePage(title: 'Lyrics Grabbr'),
     );
