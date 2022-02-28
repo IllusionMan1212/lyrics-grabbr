@@ -23,7 +23,6 @@ class NotificationEvent {
   final String artist;
   final String packageName;
   final String songTitle;
-  final String art;
   final int playbackState;
   final int duration;
 
@@ -34,7 +33,6 @@ class NotificationEvent {
     required this.artist,
     required this.timeStamp,
     required this.songTitle,
-    required this.art,
     required this.playbackState,
     required this.duration
   });
@@ -44,7 +42,6 @@ class NotificationEvent {
     String name = map['packageName'];
     String message = map['packageMessage'];
     String text = map['packageText'];
-    String icon = map['packageArt'];
     int playbackState = map['packagePlaybackState'];
     int duration = map['packageDuration'];
 
@@ -53,7 +50,6 @@ class NotificationEvent {
         artist: message,
         timeStamp: time,
         songTitle: text,
-        art: icon,
         playbackState: playbackState,
         duration: duration
     );
@@ -88,5 +84,13 @@ class AndroidNotificationListener {
 
   static Future<bool?> openPermissionSettings() async {
     return await _methodChannel.invokeMethod('plugin.openPermissionSettings');
+  }
+
+  static Future<bool?> startService() async {
+    return await _methodChannel.invokeMethod('plugin.startService');
+  }
+
+  static Future<bool?> stopService() async {
+    return await _methodChannel.invokeMethod('plugin.stopService');
   }
 }

@@ -3,34 +3,38 @@ package com.illusionware.lyricsgrabbr.lyricsgrabbr
 import io.flutter.plugin.common.EventChannel.StreamHandler
 import io.flutter.plugin.common.EventChannel.EventSink
 import android.content.*
+import android.util.Log
+import androidx.core.content.ContextCompat
 
 class NotificationStreamHandler(private val context: Context) : StreamHandler {
   private var eventSink: EventSink? = null
   private var receiver: NotificationReceiver? = null
-  private val listenerIntent = Intent(context, NotificationListener::class.java)
 
   // Called whenever the event channel is subscribed to in Flutter
   override fun onListen(o: Any?, eventSink: EventSink?) {
     this.eventSink = eventSink
 
-    receiver = NotificationReceiver()
-    val intentFilter = IntentFilter()
-    intentFilter.addAction(NotificationListener.NOTIFICATION_INTENT)
-    context.registerReceiver(receiver, intentFilter)
+    val listenerIntent = Intent(context, NotificationListener::class.java)
+    listenerIntent.action = NotificationListener.START_FOREGROUND_SERVICE_ACTION
 
-    context.startService(listenerIntent)
+    //receiver = NotificationReceiver()
+    //val intentFilter = IntentFilter()
+    //intentFilter.addAction(NotificationListener.NOTIFICATION_INTENT)
+    //context.registerReceiver(receiver, intentFilter)
+
+    ContextCompat.startForegroundService(context, listenerIntent)
   }
 
   // Called whenever the event channel subscription is cancelled in Flutter
   override fun onCancel(o: Any?) {
     eventSink = null
+    Log.d("onCancel", "subscription cancelled, stopping service")
 
-    context.stopService(listenerIntent)
-    context.unregisterReceiver(receiver)
-  }
+    val listenerIntent = Intent(context, NotificationListener::class.java)
+    listenerIntent.action = NotificationListener.STOP_FOREGROUND_SERVICE_ACTION
 
-   fun cleanUp() {
-    context.unregisterReceiver(receiver)
+    ContextCompat.startForegroundService(context, listenerIntent)
+    //context.unregisterReceiver(receiver)
   }
 
   internal inner class NotificationReceiver : BroadcastReceiver() {
@@ -38,14 +42,12 @@ class NotificationStreamHandler(private val context: Context) : StreamHandler {
       val packageName = intent.getStringExtra(NotificationListener.NOTIFICATION_PACKAGE_NAME)
       val packageMessage = intent.getStringExtra(NotificationListener.NOTIFICATION_PACKAGE_MESSAGE)
       val packageText = intent.getStringExtra(NotificationListener.NOTIFICATION_PACKAGE_TEXT)
-      val packageArt = intent.getStringExtra(NotificationListener.NOTIFICATION_PACKAGE_ART)
       val packagePlaybackState = intent.getIntExtra(NotificationListener.NOTIFICATION_PACKAGE_PLAYBACK_STATE, -1)
       val packageDuration = intent.getLongExtra(NotificationListener.NOTIFICATION_PACKAGE_DURATION, -1)
       val map = HashMap<String, Any>()
       map["packageName"] = packageName!!
       map["packageMessage"] = packageMessage!!
       map["packageText"] = packageText!!
-      map["packageArt"] = packageArt!!
       map["packagePlaybackState"] = packagePlaybackState
       map["packageDuration"] = packageDuration
       eventSink?.success(map)

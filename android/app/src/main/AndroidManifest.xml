@@ -1,8 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.illusionware.lyricsgrabbr.lyricsgrabbr">
+
+   <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
    <application
         android:label="Lyrics Grabbr"
-        android:name="${applicationName}"
+        android:name=".App"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

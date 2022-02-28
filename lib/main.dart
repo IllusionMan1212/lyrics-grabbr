@@ -2,32 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'notification_listener.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-
-const spotifyPackage = "com.spotify.music";
-const notificationId = 0;
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('@drawable/ic_notification');
-  const InitializationSettings initializationSettings =
-      InitializationSettings(android: initializationSettingsAndroid);
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: onNotificationClick);
-
   runApp(const LyricsGrabbr());
-}
-
-void onNotificationClick(String? payload) async {
-  if (payload != null) {
-    print('notification payload: $payload');
-  }
-  print('notification pressed');
 }
 
 class LyricsGrabbr extends StatelessWidget {
@@ -135,39 +112,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   void onData(NotificationEvent event) {
-    if (event.packageName == spotifyPackage) {
-      // TODO: if the app is in the background, only update our notif
-      // if the app is in the foreground, update the notif, and
-      // fetch the new lyrics and display them.
-      sendNotification(event);
-      setState(() {
-        _notifs.add(event);
-      });
-    }
-  }
-
-  Future<void> sendNotification(NotificationEvent notification) async {
-    final AndroidNotificationDetails androidNotification =
-        AndroidNotificationDetails(
-      "Lyrics",
-      "Lyrics",
-      importance: Importance.low,
-      priority: Priority.min,
-      showWhen: false,
-      ongoing: true,
-      playSound: false,
-      largeIcon: FilePathAndroidBitmap(notification.art),
-    );
-
-    final NotificationDetails notificationDetails =
-        NotificationDetails(android: androidNotification);
-
-    await flutterLocalNotificationsPlugin.show(
-      notificationId,
-      'Playing [${notification.songTitle}] By [${notification.artist}]',
-      'Tap to get lyrics',
-      notificationDetails,
-    );
+    // TODO: if the app is in the background, only update our notif
+    // if the app is in the foreground, update the notif, and
+    // fetch the new lyrics and display them.
+    setState(() {
+      _notifs.add(event);
+    });
   }
 
   void startListening() {
@@ -175,16 +125,17 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     // that keeps track of which song is playing
     // and if pressed will fetch the lyrics and display them.
 
-    _notifications = AndroidNotificationListener();
+    //_notifications = AndroidNotificationListener();
 
-    _subscription = _notifications.notificationStream.listen(onData);
+    //_subscription = _notifications.notificationStream.listen(onData);
+    AndroidNotificationListener.startService();
     setState(() => running = true);
   }
 
   void stopListening() {
     setState(() => running = false);
-    _subscription.cancel();
-    flutterLocalNotificationsPlugin.cancel(notificationId);
+    AndroidNotificationListener.stopService();
+    //_subscription.cancel();
   }
 
   @override
