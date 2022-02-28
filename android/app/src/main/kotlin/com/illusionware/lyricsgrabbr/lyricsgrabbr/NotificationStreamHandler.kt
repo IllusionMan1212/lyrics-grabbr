@@ -9,20 +9,21 @@ import androidx.core.content.ContextCompat
 class NotificationStreamHandler(private val context: Context) : StreamHandler {
   private var eventSink: EventSink? = null
   private var receiver: NotificationReceiver? = null
+  private var listenerIntent : Intent? = null
 
   // Called whenever the event channel is subscribed to in Flutter
   override fun onListen(o: Any?, eventSink: EventSink?) {
     this.eventSink = eventSink
 
-    val listenerIntent = Intent(context, NotificationListener::class.java)
-    listenerIntent.action = NotificationListener.START_FOREGROUND_SERVICE_ACTION
+    listenerIntent = Intent(context, NotificationListener::class.java)
+    listenerIntent?.action = NotificationListener.START_FOREGROUND_SERVICE_ACTION
 
-    //receiver = NotificationReceiver()
-    //val intentFilter = IntentFilter()
-    //intentFilter.addAction(NotificationListener.NOTIFICATION_INTENT)
-    //context.registerReceiver(receiver, intentFilter)
+    receiver = NotificationReceiver()
+    val intentFilter = IntentFilter()
+    intentFilter.addAction(NotificationListener.NOTIFICATION_INTENT)
+    context.registerReceiver(receiver, intentFilter)
 
-    ContextCompat.startForegroundService(context, listenerIntent)
+    ContextCompat.startForegroundService(context, listenerIntent!!)
   }
 
   // Called whenever the event channel subscription is cancelled in Flutter
@@ -30,11 +31,11 @@ class NotificationStreamHandler(private val context: Context) : StreamHandler {
     eventSink = null
     Log.d("onCancel", "subscription cancelled, stopping service")
 
-    val listenerIntent = Intent(context, NotificationListener::class.java)
-    listenerIntent.action = NotificationListener.STOP_FOREGROUND_SERVICE_ACTION
+//    val listenerIntent = Intent(context, NotificationListener::class.java)
+    listenerIntent?.action = NotificationListener.STOP_FOREGROUND_SERVICE_ACTION
 
-    ContextCompat.startForegroundService(context, listenerIntent)
-    //context.unregisterReceiver(receiver)
+    ContextCompat.startForegroundService(context, listenerIntent!!)
+    context.unregisterReceiver(receiver)
   }
 
   internal inner class NotificationReceiver : BroadcastReceiver() {

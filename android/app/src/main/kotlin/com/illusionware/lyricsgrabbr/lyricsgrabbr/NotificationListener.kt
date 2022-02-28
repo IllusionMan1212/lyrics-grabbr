@@ -60,6 +60,11 @@ class NotificationListener : NotificationListenerService() {
         getCurrentNotifications(applicationContext)
     }
 
+    override fun onListenerDisconnected() {
+        stopForegroundService()
+        super.onListenerDisconnected()
+    }
+
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         if (sbn.packageName == SPOTIFY_PACKAGE) {
             sendNotificationBroadcast(sbn, applicationContext)
@@ -140,7 +145,7 @@ class NotificationListener : NotificationListenerService() {
 
         notificationManager?.notify(NOTIFICATION_ID, notification)
 
-        //sendBroadcast(intent)
+        sendBroadcast(intent)
     }
 
     companion object {

@@ -85,12 +85,4 @@ class AndroidNotificationListener {
   static Future<bool?> openPermissionSettings() async {
     return await _methodChannel.invokeMethod('plugin.openPermissionSettings');
   }
-
-  static Future<bool?> startService() async {
-    return await _methodChannel.invokeMethod('plugin.startService');
-  }
-
-  static Future<bool?> stopService() async {
-    return await _methodChannel.invokeMethod('plugin.stopService');
-  }
 }

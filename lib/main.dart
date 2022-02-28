@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   late AndroidNotificationListener _notifications;
   late StreamSubscription<NotificationEvent> _subscription;
   BuildContext? permissionDialogCtx;
-  final List<NotificationEvent> _notifs = [];
+  NotificationEvent? currentlyPlaying;
   bool running = false;
 
   @override
@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
-  void showNotificationPermDialog() {
+  void _showNotificationPermDialog() {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if (perm != null && perm) {
       startListening();
     } else {
-      showNotificationPermDialog();
+      _showNotificationPermDialog();
     }
   }
 
@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     // if the app is in the foreground, update the notif, and
     // fetch the new lyrics and display them.
     setState(() {
-      _notifs.add(event);
+      currentlyPlaying = event;
     });
   }
 
@@ -125,17 +125,15 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     // that keeps track of which song is playing
     // and if pressed will fetch the lyrics and display them.
 
-    //_notifications = AndroidNotificationListener();
+    _notifications = AndroidNotificationListener();
 
-    //_subscription = _notifications.notificationStream.listen(onData);
-    AndroidNotificationListener.startService();
+    _subscription = _notifications.notificationStream.listen(onData);
     setState(() => running = true);
   }
 
   void stopListening() {
     setState(() => running = false);
-    AndroidNotificationListener.stopService();
-    //_subscription.cancel();
+    _subscription.cancel();
   }
 
   @override
@@ -144,19 +142,49 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: ListView.builder(
-          itemCount: _notifs.length,
-          reverse: true,
-          itemBuilder: (BuildContext context, int idx) {
-            final entry = _notifs[idx];
-            return ListTile(
-              leading: Text(entry.songTitle),
-              trailing: Text(entry.artist),
-            );
-          }),
+      body: Container(
+        padding: const EdgeInsets.all(20),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              running ? RichText(
+                text: TextSpan(
+                    text: currentlyPlaying?.songTitle,
+                    style: const TextStyle(
+                        fontSize: 24.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w700,
+                    ),
+                    children: [
+                      const TextSpan(
+                        text: "\n",
+                      ),
+                      TextSpan(
+                          text: currentlyPlaying?.artist,
+                          style: const TextStyle(
+                            fontSize: 20.0,
+                            color: Color(0xFF303030),
+                          )
+                      )
+                    ]
+                ),
+                textAlign: TextAlign.center,
+              ) :
+              const Text("Listener stopped"),
+              running ? Text(
+                currentlyPlaying?.playbackState == PlaybackState.STATE_PLAYING ? "Spotify Playing" : "Spotify Paused",
+                style: Theme.of(context).textTheme.headline6,
+              ) :
+              const Text("")
+            ],
+          ),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: running ? stopListening : startListening,
-        tooltip: running ? 'Stop service' : "Start service",
+        tooltip: running ? 'Stop listener' : "Start listener",
         child: running ? const Icon(Icons.stop) : const Icon(Icons.play_arrow),
       ),
     );
