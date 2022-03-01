@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat
 
 class NotificationStreamHandler(private val context: Context) : StreamHandler {
   private var eventSink: EventSink? = null
-  private var receiver: NotificationReceiver? = null
+  var receiver: NotificationReceiver? = null
   private var listenerIntent : Intent? = null
 
   // Called whenever the event channel is subscribed to in Flutter
@@ -31,14 +31,10 @@ class NotificationStreamHandler(private val context: Context) : StreamHandler {
     eventSink = null
     Log.d("onCancel", "subscription cancelled, stopping service")
 
-//    val listenerIntent = Intent(context, NotificationListener::class.java)
-    listenerIntent?.action = NotificationListener.STOP_FOREGROUND_SERVICE_ACTION
-
-    ContextCompat.startForegroundService(context, listenerIntent!!)
     context.unregisterReceiver(receiver)
   }
 
-  internal inner class NotificationReceiver : BroadcastReceiver() {
+  inner class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
       val packageName = intent.getStringExtra(NotificationListener.NOTIFICATION_PACKAGE_NAME)
       val packageMessage = intent.getStringExtra(NotificationListener.NOTIFICATION_PACKAGE_MESSAGE)

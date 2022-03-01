@@ -3,11 +3,13 @@ package com.illusionware.lyricsgrabbr.lyricsgrabbr
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.MediaMetadata
 import android.media.session.MediaController
 import android.media.session.MediaSession
+import android.media.session.PlaybackState
 import android.os.Build
 import android.os.Handler
 import android.service.notification.NotificationListenerService
@@ -31,13 +33,6 @@ class NotificationListener : NotificationListenerService() {
         notificationManager = NotificationManagerCompat.from(applicationContext)
     }
 
-    override fun onDestroy() {
-        Log.d("onDestroy Service", "destroying service")
-        stopForeground(true)
-        stopSelf()
-        super.onDestroy()
-    }
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
             when (intent.action) {
@@ -45,10 +40,6 @@ class NotificationListener : NotificationListenerService() {
                     Log.d("START", "starting foreground service")
                     startForegroundService()
                     getCurrentNotifications(applicationContext)
-                }
-                STOP_FOREGROUND_SERVICE_ACTION -> {
-                    Log.d("STOP", "stopping foreground service")
-                    stopForegroundService()
                 }
             }
         }
@@ -62,7 +53,6 @@ class NotificationListener : NotificationListenerService() {
 
     override fun onListenerDisconnected() {
         stopForegroundService()
-        super.onListenerDisconnected()
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
@@ -71,11 +61,19 @@ class NotificationListener : NotificationListenerService() {
         }
     }
 
+    private fun getStopServiceNotificationAction(): PendingIntent {
+        val intent = Intent(MainActivity.ACTION_NOTIFICATION_LISTENER_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+        return pendingIntent
+    }
+
     private fun startForegroundService() {
         val notification: Notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-            .setContentTitle("TITLE")
-            .setContentText("TEXT")
+            .setContentTitle("Service Running")
+            .setContentText("Play some songs on spotify to get lyrics")
             .setSmallIcon(R.drawable.ic_notification)
+            .setShowWhen(false)
+            .addAction(R.drawable.ic_notification, "Stop Service", getStopServiceNotificationAction())
             .build()
 
         notification.flags = Notification.FLAG_FOREGROUND_SERVICE
@@ -133,17 +131,35 @@ class NotificationListener : NotificationListenerService() {
         intent.putExtra(NOTIFICATION_PACKAGE_DURATION, duration)
         intent.putExtra(NOTIFICATION_PACKAGE_PLAYBACK_STATE, playbackState)
 
-        val notification: Notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-            .setContentTitle("Playing [${packageText}] By [${packageMessage}]")
-            .setContentText("Tap to get lyrics")
-            .setSmallIcon(R.drawable.ic_notification)
-            .setLargeIcon(albumArt)
-//            .setContentIntent(pendingIntent) // launch intent when clicking on notification
-            .build()
+        if (playbackState == PlaybackState.STATE_PAUSED) {
+            val notification: Notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                .setContentTitle("Service Running")
+                .setContentText("Play some songs on spotify to get lyrics")
+                .setSmallIcon(R.drawable.ic_notification)
+                .setShowWhen(false)
+                .addAction(R.drawable.ic_notification, "Stop Service", getStopServiceNotificationAction())
+                .build()
 
-        notification.flags = Notification.FLAG_FOREGROUND_SERVICE
+            notification.flags = Notification.FLAG_FOREGROUND_SERVICE
+            notificationManager?.notify(NOTIFICATION_ID, notification)
+        } else {
+            val notificationIntent = Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
+            val notification: Notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                .setContentTitle("Playing [${packageText}] By [${packageMessage}]")
+                .setContentText("Tap to get lyrics")
+                .setSmallIcon(R.drawable.ic_notification)
+                .setLargeIcon(albumArt)
+                .setShowWhen(false)
+                .setContentIntent(pendingIntent)
+                .addAction(R.drawable.ic_notification, "Stop Service", getStopServiceNotificationAction())
+                .build()
 
-        notificationManager?.notify(NOTIFICATION_ID, notification)
+            notification.flags = Notification.FLAG_FOREGROUND_SERVICE
+            notificationManager?.notify(NOTIFICATION_ID, notification)
+        }
 
         sendBroadcast(intent)
     }
@@ -159,6 +175,5 @@ class NotificationListener : NotificationListenerService() {
         const val NOTIFICATION_CHANNEL_ID = "Lyrics"
         const val SPOTIFY_PACKAGE = "com.spotify.music"
         const val START_FOREGROUND_SERVICE_ACTION = "START_SERVICE"
-        const val STOP_FOREGROUND_SERVICE_ACTION = "STOP_SERVICE"
     }
 }

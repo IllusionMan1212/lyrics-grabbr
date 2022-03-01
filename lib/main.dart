@@ -112,19 +112,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   void onData(NotificationEvent event) {
-    // TODO: if the app is in the background, only update our notif
-    // if the app is in the foreground, update the notif, and
-    // fetch the new lyrics and display them.
     setState(() {
       currentlyPlaying = event;
     });
   }
 
   void startListening() {
-    // TODO: make the FAB start and stop a local notification service
-    // that keeps track of which song is playing
-    // and if pressed will fetch the lyrics and display them.
-
     _notifications = AndroidNotificationListener();
 
     _subscription = _notifications.notificationStream.listen(onData);

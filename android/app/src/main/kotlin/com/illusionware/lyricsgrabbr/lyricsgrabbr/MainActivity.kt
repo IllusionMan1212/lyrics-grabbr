@@ -15,7 +15,7 @@ class MainActivity: FlutterActivity() {
     private var streamHandler : NotificationStreamHandler? = null
 
     companion object {
-        private const val ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"
+        const val ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"
         private const val EVENT_CHANNEL_NAME = "notifications.eventChannel"
         private const val METHOD_CHANNEL_NAME = "notifications/method"
     }
@@ -39,6 +39,13 @@ class MainActivity: FlutterActivity() {
         val eventChannel = EventChannel(flutterEngine!!.dartExecutor.binaryMessenger, EVENT_CHANNEL_NAME)
         streamHandler = NotificationStreamHandler(context)
         eventChannel.setStreamHandler(streamHandler)
+    }
+
+    override fun onDestroy() {
+        if (streamHandler?.receiver != null) {
+            context.unregisterReceiver(streamHandler?.receiver)
+        }
+        super.onDestroy()
     }
 
     private fun isPermissionGranted(): Boolean {
