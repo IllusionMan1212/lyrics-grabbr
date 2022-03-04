@@ -30,8 +30,6 @@ class NotificationStreamHandler(private val context: Context) : StreamHandler {
   override fun onCancel(o: Any?) {
     eventSink = null
     Log.d("onCancel", "subscription cancelled, stopping service")
-
-    context.unregisterReceiver(receiver)
   }
 
   inner class NotificationReceiver : BroadcastReceiver() {

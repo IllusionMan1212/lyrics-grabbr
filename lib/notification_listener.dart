@@ -28,14 +28,13 @@ class NotificationEvent {
 
   final DateTime timeStamp;
 
-  const NotificationEvent({
-    required this.packageName,
-    required this.artist,
-    required this.timeStamp,
-    required this.songTitle,
-    required this.playbackState,
-    required this.duration
-  });
+  const NotificationEvent(
+      {required this.packageName,
+      required this.artist,
+      required this.timeStamp,
+      required this.songTitle,
+      required this.playbackState,
+      required this.duration});
 
   factory NotificationEvent.fromMap(Map<dynamic, dynamic> map) {
     DateTime time = DateTime.now();
@@ -51,8 +50,7 @@ class NotificationEvent {
         timeStamp: time,
         songTitle: text,
         playbackState: playbackState,
-        duration: duration
-    );
+        duration: duration);
   }
 }
 
@@ -62,13 +60,12 @@ NotificationEvent _notificationEvent(dynamic data) {
 
 class AndroidNotificationListener {
   static const EventChannel _notificationEventChannel =
-  EventChannel('notifications.eventChannel');
+      EventChannel('notifications.eventChannel');
   static const MethodChannel _methodChannel =
-  MethodChannel('notifications/method');
+      MethodChannel('notifications/method');
 
   Stream<NotificationEvent> get notificationStream {
     if (Platform.isAndroid) {
-
       Stream<NotificationEvent> _notificationStream = _notificationEventChannel
           .receiveBroadcastStream()
           .map((event) => _notificationEvent(event));

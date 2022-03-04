@@ -35,6 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   http: ^0.13.4
   flutter_local_notifications: ^9.3.2
+  url_launcher: ^6.0.20
 
 dev_dependencies:
   flutter_test:
