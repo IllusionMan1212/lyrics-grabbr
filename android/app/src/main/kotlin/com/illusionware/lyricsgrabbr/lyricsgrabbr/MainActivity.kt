@@ -1,4 +1,4 @@
-package com.illusionware.lyricsgrabbr.lyricsgrabbr
+package com.illusionware.lyricsgrabbr
 
 import android.content.Intent
 import android.os.Bundle

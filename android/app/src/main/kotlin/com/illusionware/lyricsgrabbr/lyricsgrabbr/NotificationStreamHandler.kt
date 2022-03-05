@@ -1,4 +1,4 @@
-package com.illusionware.lyricsgrabbr.lyricsgrabbr
+package com.illusionware.lyricsgrabbr
 
 import io.flutter.plugin.common.EventChannel.StreamHandler
 import io.flutter.plugin.common.EventChannel.EventSink
