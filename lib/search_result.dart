@@ -125,7 +125,7 @@ class _SearchResultState extends State<SearchResult> {
           onLongPress: () => _showOptionsBottomSheet(),
           child: Ink(
             height: 75,
-            color: Colors.black,
+            color: Colors.white10,
             child: Row(
               children: [
                 Container(
@@ -145,7 +145,7 @@ class _SearchResultState extends State<SearchResult> {
                       Text(
                         widget.title,
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: Colors.black,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -154,7 +154,7 @@ class _SearchResultState extends State<SearchResult> {
                       Text(
                         widget.artist,
                         style: const TextStyle(
-                          color: Colors.white70,
+                          color: Colors.black54,
                           fontSize: 14,
                         ),
                         overflow: TextOverflow.ellipsis,

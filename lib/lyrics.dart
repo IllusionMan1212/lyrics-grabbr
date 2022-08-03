@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
+import 'package:web_scraper/web_scraper.dart';
 
 class LyricsPage extends StatefulWidget {
   const LyricsPage({
@@ -31,21 +31,21 @@ class _LyricsPageState extends State<LyricsPage> {
   Future<void> initPlatformState() async {
     setState(() => fetching = true);
 
-    final uri = Uri.https('api.illusionman1212.tech', '/lyrics', {
-      'songUrl': widget.url,
-    });
+    final webScraper = WebScraper('https://genius.com');
 
-    var response = await http.get(uri);
-    if (response.statusCode == 200) {
-      final jsonRes = convert.jsonDecode(response.body) as Map<String, dynamic>;
-
+    String path = widget.url.split('genius.com/')[1];
+    String fullLyrics = '';
+    if (await webScraper.loadWebPage('/$path?react=1')) {
+      webScraper.loadFromString(webScraper.getPageContent().replaceAll('<br>', '\n'));
+      var element = webScraper.getElement("div[data-lyrics-container]", ['data-lyrics-container']);
+      for (var section in element) {
+        fullLyrics += section['title'] + '\n';
+      }
       setState(() {
+        lyrics = fullLyrics;
         fetching = false;
-        lyrics = jsonRes['lyrics'];
       });
-    } else {
-      print('error while GETing lyrics');
-      setState(() => fetching = false);
+      // print(thing);
     }
   }
 
