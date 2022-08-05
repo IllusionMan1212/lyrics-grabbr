@@ -1,3 +1,3 @@
 # lyricsgrabbr
 
-App to listen to Spotify notifications and provide lyrics for currently playing song.
+App that listens to your notifications and provides lyrics for the currently playing song.
