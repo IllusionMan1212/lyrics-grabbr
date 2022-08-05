@@ -56,9 +56,7 @@ class NotificationListener : NotificationListenerService() {
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
-        if (sbn.packageName == SPOTIFY_PACKAGE) {
-            sendNotificationBroadcast(sbn, applicationContext)
-        }
+        sendNotificationBroadcast(sbn, applicationContext)
     }
 
     private fun getStopServiceNotificationAction(): PendingIntent {
@@ -70,7 +68,7 @@ class NotificationListener : NotificationListenerService() {
     private fun startForegroundService() {
         val notification: Notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setContentTitle("Service Running")
-            .setContentText("Play some songs on spotify to get lyrics")
+            .setContentText("Play some songs on a supported player to get lyrics")
             .setSmallIcon(R.drawable.ic_notification)
             .setShowWhen(false)
             .addAction(R.drawable.ic_notification, "Stop Service", getStopServiceNotificationAction())
@@ -103,19 +101,21 @@ class NotificationListener : NotificationListenerService() {
     private fun getCurrentNotifications(context: Context) {
         val sbns = activeNotifications
         for (sbn in sbns) {
-            if (sbn.packageName == SPOTIFY_PACKAGE) {
-                sendNotificationBroadcast(sbn, context)
-            }
+            sendNotificationBroadcast(sbn, context)
         }
     }
 
     private fun sendNotificationBroadcast(sbn: StatusBarNotification, context: Context) {
         // get the media session stuff
         val mediaSessionToken = sbn.notification.extras.getParcelable<MediaSession.Token>(Notification.EXTRA_MEDIA_SESSION)
-        val mediaCtrl = mediaSessionToken?.let { MediaController(context, it) }
-        val duration = mediaCtrl?.metadata?.getLong(MediaMetadata.METADATA_KEY_DURATION)?.div(1000)
-        val playbackState = mediaCtrl?.playbackState?.state
-        val albumArt = mediaCtrl?.metadata?.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART)
+        if (mediaSessionToken == null) {
+            return
+        }
+
+        val mediaCtrl = mediaSessionToken.let { MediaController(context, it) }
+        val duration = mediaCtrl.metadata?.getLong(MediaMetadata.METADATA_KEY_DURATION)?.div(1000)
+        val playbackState = mediaCtrl.playbackState?.state
+        val albumArt = mediaCtrl.metadata?.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART)
 
         // Retrieve package name to set as title.
         val packageName = sbn.packageName
@@ -134,7 +134,7 @@ class NotificationListener : NotificationListenerService() {
         if (playbackState == PlaybackState.STATE_PAUSED) {
             val notification: Notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle("Service Running")
-                .setContentText("Play some songs on spotify to get lyrics")
+                .setContentText("Play some songs on a supported player to get lyrics")
                 .setSmallIcon(R.drawable.ic_notification)
                 .setShowWhen(false)
                 .addAction(R.drawable.ic_notification, "Stop Service", getStopServiceNotificationAction())
@@ -173,7 +173,6 @@ class NotificationListener : NotificationListenerService() {
         const val NOTIFICATION_PACKAGE_DURATION = "package_duration"
         const val NOTIFICATION_ID = 12251999
         const val NOTIFICATION_CHANNEL_ID = "Lyrics"
-        const val SPOTIFY_PACKAGE = "com.spotify.music"
         const val START_FOREGROUND_SERVICE_ACTION = "START_SERVICE"
     }
 }
