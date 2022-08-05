@@ -61,7 +61,7 @@ class NotificationListener : NotificationListenerService() {
 
     private fun getStopServiceNotificationAction(): PendingIntent {
         val intent = Intent(MainActivity.ACTION_NOTIFICATION_LISTENER_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         return pendingIntent
     }
 

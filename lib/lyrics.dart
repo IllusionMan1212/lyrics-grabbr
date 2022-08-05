@@ -45,7 +45,6 @@ class _LyricsPageState extends State<LyricsPage> {
         lyrics = fullLyrics;
         fetching = false;
       });
-      // print(thing);
     }
   }
 

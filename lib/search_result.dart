@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'lyrics.dart';
 
@@ -135,6 +136,17 @@ class _SearchResultState extends State<SearchResult> {
                     width: 75,
                     height: 75,
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      Fluttertoast.showToast(
+                          msg: 'Failed to load album art for: ${widget.title}',
+                          toastLength: Toast.LENGTH_LONG);
+                      return const Center(
+                        child: SizedBox(
+                            width: 75,
+                            height: 75,
+                            child: Icon(Icons.broken_image, size: 40)),
+                      );
+                    },
                   ),
                 ),
                 Flexible(
