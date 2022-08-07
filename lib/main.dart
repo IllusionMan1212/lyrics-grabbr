@@ -1,26 +1,59 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'notification_listener.dart';
 import 'search_result.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'settings.dart';
+import 'theme_provider.dart';
 
 Future<void> main() async {
   runApp(const LyricsGrabbr());
 }
 
-class LyricsGrabbr extends StatelessWidget {
+class LyricsGrabbr extends StatefulWidget {
   const LyricsGrabbr({Key? key}) : super(key: key);
 
   @override
+  State<LyricsGrabbr> createState() => _LyricsGrabbrState();
+}
+
+class _LyricsGrabbrState extends State<LyricsGrabbr> {
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Lyrics Grabbr',
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-      ),
-      home: const HomePage(title: 'Lyrics Grabbr'),
+    return FutureBuilder<SharedPreferences>(
+      future: SharedPreferences.getInstance(),
+      builder: (_, snapshot) {
+      final prefTheme = snapshot.data?.getString("theme");
+
+      var themeMode = ThemeMode.system;
+      if (prefTheme == AppTheme.Dark.name) {
+          themeMode = ThemeMode.dark;
+      } else if (prefTheme == AppTheme.Light.name) {
+          themeMode = ThemeMode.light;
+      } else if (prefTheme == AppTheme.System.name) {
+          themeMode = ThemeMode.system;
+      }
+
+      return snapshot.hasData ? ChangeNotifierProvider(
+        create: (context) => ThemeProvider(themeMode),
+        builder: (context, _) {
+          final themeProvider = Provider.of<ThemeProvider>(context);
+
+          return MaterialApp(
+            title: 'Lyrics Grabbr',
+            theme: MyThemes.lightTheme,
+            darkTheme: MyThemes.darkTheme,
+            themeMode: themeProvider.themeMode,
+            home: const HomePage(title: 'Lyrics Grabbr'),
+          );
+        }
+      ) : Container();
+      }
     );
   }
 }
@@ -90,7 +123,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               ),
               content: const Text(
                 'This app requires permission to listen to notifications to function properly. Please grant permission in the next screen. BEWARE that the only way to stop the service is to revoke the notification listening permission.',
-                style: TextStyle(color: Colors.blueGrey),
               ),
               actions: [
                 TextButton(
@@ -178,12 +210,86 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Widget _buildResults() {
-    return ListView.builder(
+    return ListView.separated(
       itemBuilder: (_, i) {
         return searchResults[i];
       },
       itemCount: searchResults.length,
+      separatorBuilder: (BuildContext context, int index) {
+        return const Divider(height: 1);
+      },
     );
+  }
+
+  List<Widget> _buildPage() {
+    if (lastNotification != null) {
+      return [
+        Container(
+          padding: const EdgeInsets.all(20),
+          child: RichText(
+            text: TextSpan(
+                text: lastNotification?.songTitle,
+                style: TextStyle(
+                  fontSize: 24.0,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                  fontWeight: FontWeight.w700,
+                ),
+                children: [
+                  const TextSpan(
+                    text: '\n',
+                  ),
+                  TextSpan(
+                    text: lastNotification?.artist,
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
+                    ),
+                  )
+                ]),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Container(
+          child: searching
+              ? Expanded(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [CircularProgressIndicator(value: null)]))
+              : Flexible(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        child: Text(
+                          running
+                              ? 'Found ${searchResults.length} result(s)'
+                              : "",
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Theme.of(context).textTheme.bodyText1?.color,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                      Flexible(child: _buildResults()),
+                    ],
+                  ),
+                ),
+        ),
+      ];
+    }
+
+    return [
+      const Padding(
+        padding: EdgeInsets.symmetric(vertical: 16),
+        child: Text("No supported player is running",
+            style: TextStyle(fontSize: 24)),
+      ),
+    ];
   }
 
   @override
@@ -192,72 +298,23 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       appBar: AppBar(
         title: Text(widget.title),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            tooltip: "Settings",
+            splashRadius: 20,
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const SettingsPage()));
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (running)
-              Container(
-                padding: const EdgeInsets.all(20),
-                child: RichText(
-                  text: TextSpan(
-                      text: lastNotification?.songTitle,
-                      style: const TextStyle(
-                        fontSize: 24.0,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      children: [
-                        const TextSpan(
-                          text: '\n',
-                        ),
-                        TextSpan(
-                          text: lastNotification?.artist,
-                          style: const TextStyle(
-                            fontSize: 20.0,
-                            color: Color(0xFF303030),
-                          ),
-                        )
-                      ]),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            Container(
-              child: searching
-                  ? Expanded(
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const [
-                          CircularProgressIndicator(value: null)
-                        ]))
-                  : Flexible(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            margin: const EdgeInsets.symmetric(vertical: 10),
-                            child: Text(
-                              running
-                                  ? 'Found ${searchResults.length} result(s)'
-                                  : "",
-                              style: const TextStyle(
-                                fontSize: 15,
-                                color: Colors.black87,
-                                fontWeight: FontWeight.bold,
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                          ),
-                          Flexible(child: _buildResults()),
-                        ],
-                      ),
-                    ),
-            ),
-          ],
+          children: _buildPage(),
         ),
       ),
     );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:convert' as convert;
 import 'package:web_scraper/web_scraper.dart';
 
 class LyricsPage extends StatefulWidget {
@@ -87,8 +86,7 @@ class _LyricsPageState extends State<LyricsPage> {
                 width: MediaQuery.of(context).size.width,
                 child: SingleChildScrollView(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 30),
+                    padding: const EdgeInsets.all(30),
                     child: Text(
                       lyrics ?? '',
                       style: const TextStyle(

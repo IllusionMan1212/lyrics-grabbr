@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import 'lyrics.dart';
 
-class SearchResult extends StatefulWidget {
+class SearchResult extends StatelessWidget {
   const SearchResult(
       {Key? key,
       required this.title,
@@ -31,65 +30,28 @@ class SearchResult extends StatefulWidget {
         id = json['id'],
         super(key: key);
 
-  @override
-  State<StatefulWidget> createState() => _SearchResultState();
-}
-
-class OptionItem extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final void Function()? tapFunction;
-
-  const OptionItem(
-      {Key? key, required this.title, required this.icon, this.tapFunction})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: tapFunction,
-      child: Ink(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        child: Row(
-          children: [
-            Container(
-              margin: const EdgeInsets.only(right: 15),
-              child: Icon(icon),
-            ),
-            Text(
-              title,
-              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SearchResultState extends State<SearchResult> {
   List<Widget> _buildOptions() {
     return <OptionItem>[
       OptionItem(
           title: "Open Artist Page in Genius",
           icon: Icons.library_music,
-          tapFunction: () async {
-            if (!await launch(widget.artistUrl)) {
-              throw 'could not launch ${widget.artistUrl}';
+          onTap: () async {
+            if (!await launch(artistUrl)) {
+              throw 'could not launch $artistUrl';
             }
           }),
       OptionItem(
           title: "Open Song Page in Genius",
           icon: Icons.music_note,
-          tapFunction: () async {
-            if (!await launch(widget.url)) {
-              throw 'could not launch ${widget.url}';
+          onTap: () async {
+            if (!await launch(url)) {
+              throw 'could not launch $url';
             }
           })
     ];
   }
 
-  void _showOptionsBottomSheet() {
+  void _showOptionsBottomSheet(BuildContext context) {
     showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -109,74 +71,99 @@ class _SearchResultState extends State<SearchResult> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Container(
-        margin: const EdgeInsets.only(top: 0.5),
-        child: InkWell(
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => LyricsPage(
-                  title: widget.title,
-                  artist: widget.artist,
-                  url: widget.url,
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => LyricsPage(
+                title: title,
+                artist: artist,
+                url: url,
+              ),
+            ),
+          );
+        },
+        onLongPress: () => _showOptionsBottomSheet(context),
+        child: Ink(
+          height: 75,
+          child: Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(right: 20),
+                child: Image.network(
+                  thumbnail,
+                  width: 75,
+                  height: 75,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Center(
+                      child: SizedBox(
+                          width: 75,
+                          height: 75,
+                          child: Icon(Icons.broken_image, size: 40)),
+                    );
+                  },
                 ),
               ),
-            );
-          },
-          onLongPress: () => _showOptionsBottomSheet(),
-          child: Ink(
-            height: 75,
-            color: Colors.white10,
-            child: Row(
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(right: 20),
-                  child: Image.network(
-                    widget.thumbnail,
-                    width: 75,
-                    height: 75,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      Fluttertoast.showToast(
-                          msg: 'Failed to load album art for: ${widget.title}',
-                          toastLength: Toast.LENGTH_LONG);
-                      return const Center(
-                        child: SizedBox(
-                            width: 75,
-                            height: 75,
-                            child: Icon(Icons.broken_image, size: 40)),
-                      );
-                    },
-                  ),
-                ),
-                Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        widget.title,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyText1?.color,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
-                      Text(
-                        widget.artist,
-                        style: const TextStyle(
-                          color: Colors.black54,
-                          fontSize: 14,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      artist,
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.subtitle1?.color,
+                        fontSize: 14,
                       ),
-                    ],
-                  ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class OptionItem extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final void Function()? onTap;
+
+  const OptionItem(
+      {Key? key, required this.title, required this.icon, this.onTap})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Ink(
+        padding: const EdgeInsets.all(20),
+        child: Row(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(right: 15),
+              child: Icon(icon),
+            ),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+            ),
+          ],
         ),
       ),
     );
