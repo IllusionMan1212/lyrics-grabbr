@@ -180,7 +180,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     // TODO: build an httpclient to reuse between requests.
     final uri = Uri.https(
-      'api.illusionman1212.tech',
+      'api.illusionman1212.com',
       '/lyrics/search',
       {'q': '$song $artist'},
     );
