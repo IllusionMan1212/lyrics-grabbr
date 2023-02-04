@@ -1,4 +1,4 @@
-package com.illusionware.lyricsgrabbr
+package com.illusionman1212.lyricsgrabbr
 
 import android.app.Notification
 import android.app.NotificationChannel
