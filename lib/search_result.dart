@@ -16,16 +16,16 @@ class SearchResult extends StatelessWidget {
 
   final String title;
   final String artist;
-  final String url;
-  final String artistUrl;
+  final Uri url;
+  final Uri artistUrl;
   final String thumbnail;
   final int id;
 
   SearchResult.fromJson(Map<String, dynamic> json, {Key? key})
       : title = json['meta']['title'],
         artist = json['meta']['primaryArtist']['name'],
-        url = json['url'],
-        artistUrl = json['meta']['primaryArtist']['url'],
+        url = Uri.parse(json['url']),
+        artistUrl = Uri.parse(json['meta']['primaryArtist']['url']),
         thumbnail = json['resources']['thumbnail'],
         id = json['id'],
         super(key: key);
@@ -36,7 +36,7 @@ class SearchResult extends StatelessWidget {
           title: "Open Artist Page in Genius",
           icon: Icons.library_music,
           onTap: () async {
-            if (!await launch(artistUrl)) {
+            if (!await launchUrl(artistUrl)) {
               throw 'could not launch $artistUrl';
             }
           }),
@@ -44,7 +44,7 @@ class SearchResult extends StatelessWidget {
           title: "Open Song Page in Genius",
           icon: Icons.music_note,
           onTap: () async {
-            if (!await launch(url)) {
+            if (!await launchUrl(url)) {
               throw 'could not launch $url';
             }
           })
@@ -78,7 +78,7 @@ class SearchResult extends StatelessWidget {
               builder: (context) => LyricsPage(
                 title: title,
                 artist: artist,
-                url: url,
+                url: url.toString(),
               ),
             ),
           );
@@ -113,7 +113,7 @@ class SearchResult extends StatelessWidget {
                     Text(
                       title,
                       style: TextStyle(
-                        color: Theme.of(context).textTheme.bodyText1?.color,
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -122,7 +122,7 @@ class SearchResult extends StatelessWidget {
                     Text(
                       artist,
                       style: TextStyle(
-                        color: Theme.of(context).textTheme.subtitle1?.color,
+                        color: Theme.of(context).textTheme.titleMedium?.color,
                         fontSize: 14,
                       ),
                       overflow: TextOverflow.ellipsis,
