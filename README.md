@@ -5,4 +5,4 @@ App that listens to your notifications and provides lyrics for the currently pla
 Any player that uses the MediaSession API _should_ be supported
 
 ## License
-The project is licensed under the GPL2 license while the assets (icon) are licensed under the creative commons license.
+The project is licensed under the GPL3 license while the assets (icon) are licensed under the creative commons license.
