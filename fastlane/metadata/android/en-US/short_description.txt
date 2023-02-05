@@ -1,1 +1,1 @@
-Lyrics grabbr listens to your notifications and provides lyrics for the currently playing song.
+Lyrics grabbr provides lyrics for the currently playing song
