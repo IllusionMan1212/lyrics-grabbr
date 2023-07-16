@@ -71,13 +71,13 @@ class _LyricsPageState extends State<LyricsPage> {
       ),
       body: Center(
         child: fetching
-            ? Column(
+            ? const Column(
                 children: [
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [CircularProgressIndicator(value: null)],
+                      children: [CircularProgressIndicator(value: null)],
                     ),
                   ),
                 ],
@@ -87,7 +87,7 @@ class _LyricsPageState extends State<LyricsPage> {
                 child: SingleChildScrollView(
                   child: Container(
                     padding: const EdgeInsets.all(30),
-                    child: Text(
+                    child: SelectableText(
                       lyrics ?? '',
                       style: const TextStyle(
                         fontSize: 16,
