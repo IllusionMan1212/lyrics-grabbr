@@ -20,6 +20,7 @@ class LyricsPage extends StatefulWidget {
 class _LyricsPageState extends State<LyricsPage> {
   bool fetching = false;
   String? lyrics;
+  bool instrumental = false;
 
   @override
   void initState() {
@@ -35,13 +36,16 @@ class _LyricsPageState extends State<LyricsPage> {
     String path = widget.url.split('genius.com/')[1];
     String fullLyrics = '';
     if (await webScraper.loadWebPage('/$path?react=1')) {
-      webScraper.loadFromString(webScraper.getPageContent().replaceAll('<br>', '\n'));
-      var element = webScraper.getElement("div[data-lyrics-container]", ['data-lyrics-container']);
+      webScraper
+          .loadFromString(webScraper.getPageContent().replaceAll('<br>', '\n'));
+      var element = webScraper
+          .getElement("div[data-lyrics-container]", ['data-lyrics-container']);
       for (var section in element) {
         fullLyrics += section['title'] + '\n';
       }
       setState(() {
         lyrics = fullLyrics;
+        instrumental = fullLyrics.isEmpty;
         fetching = false;
       });
     }
@@ -82,20 +86,37 @@ class _LyricsPageState extends State<LyricsPage> {
                   ),
                 ],
               )
-            : SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: SingleChildScrollView(
-                  child: Container(
-                    padding: const EdgeInsets.all(30),
-                    child: SelectableText(
-                      lyrics ?? '',
-                      style: const TextStyle(
-                        fontSize: 16,
+            : instrumental
+                ? const Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.music_note, size: 50),
+                        SizedBox(width: 20, height: 20),
+                        Text(
+                          'This Song is an Instrumental',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: SingleChildScrollView(
+                      child: Container(
+                        padding: const EdgeInsets.all(30),
+                        child: SelectableText(
+                          lyrics ?? '',
+                          style: const TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
       ),
     );
   }
