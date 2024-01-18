@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lyrics Grabbr</string>
+
+    <!--  General  -->
+    <string name="go_back">رجوع</string>
+    <string name="cancel">إلغاء</string>
+    <string name="confirm">تأكيد</string>
+    <string name="timeout">لقد انتهت مهلة الطلب، حاول مرة أخرى لاحقًا</string>
+    <string name="generic_error">لقد حدث خطأ، حاول مرة أخرى لاحقاً</string>
+    <string name="retry">أعد المحاولة</string>
+    <string name="spotify_no_lyrics_error">عذرًا، لا يحتوي Spotify على كلمات لهذه الأغنية</string>
+
+    <!--  Home  -->
+    <string name="no_supported_player">لا يوجد مشغل مدعوم قيد التشغيل</string>
+    <string name="open_settings">فتح الإعدادات</string>
+    <string name="notification_listen_permission">إذن قراءة الإشعارات</string>
+    <string name="notification_listen_desc">هذا التطبيق يحتاج إذن قراءة الإشعارات للعمل بشكل صحيح. يرجى منح الإذن في شاشة الإعدادات التالية.\nإحذر أن الطريقة الوحيدة لإيقاف الخدمة هي إبطال إذن قراءة الإشعارات.</string>
+    <string name="no_results">لم يتم العثور على نتائج</string>
+    <string name="found_results">تم العثور على %1$d نتيجة</string>
+    <string name="powered_by">مشغل بواسطة<annotation href="https://github.com/sv443/geniURL">geniURL</annotation></string>
+    <string name="open_song_page">افتح صفحة الأغنية</string>
+    <string name="open_artist_page">افتح صفحة الفنان</string>
+    <string name="notification_post_permission">مطلوب إذن الإشعارات</string>
+    <string name="notification_post_permission_desc">يتطلب هذا التطبيق أذونات الإشعارات لبدء خدمة مقدمة بغرض الاستماع إلى إشعارات الموسيقى، ولا يمكن أن يعمل بدونها.</string>
+    <string name="notification_post_permission_not_granted">لم يتم منح إذن الإشعارات، لن يعمل التطبيق بشكل صحيح</string>
+    <string name="grant_permission">منح الإذن</string>
+    <string name="no_spotify_song_playing">No song is playing on Spotify</string>
+
+    <!--  Settings  -->
+    <string name="settings">الإعدادات</string>
+    <string name="appearance">المظهر</string>
+    <string name="theme">مظهر التطبيق</string>
+    <string name="theme_light">نهار</string>
+    <string name="theme_dark">ليلي</string>
+    <string name="theme_system">استخدم مظهر النظام</string>
+    <string name="use_spotify_api">استخدم Spotify للكلمات</string>
+    <string name="spotify_client_id">Spotify Client ID</string>
+    <string name="not_set">خالي</string>
+    <string name="spotify_client_id_desc">يمكن لهذا التطبيق استخدام واجهة برمجة تطبيقات الويب الخاصة بـ Spotify للحصول على كلمات الأغاني. تحتاج إلى تقديم Spotify Client ID لاستخدام هذه الميزة. يمكنك الحصول على واحدة من <annotation href="https://developer.spotify.com/dashboard/applications">هنا</annotation>.\nلا يعمل هذا إلا إذا كنت تقوم بتشغيل الموسيقى من مشغل Spotify.</string>
+
+    <!--  Lyrics  -->
+    <string name="lyrics">كلمات الأغنية</string>
+    <string name="instrumental">هذه الأغنية موسيقية</string>
+
+    <!--  Notification  -->
+    <string name="service_running">الخدمة قيد التشغيل</string>
+    <string name="stop_service">وقف الخدمة</string>
+    <string name="service_notif_desc_init">قم بتشغيل بعض الأغاني على مشغل مدعوم للحصول على كلمات الأغاني</string>
+    <string name="service_notif_desc_playing">انقر للحصول على كلمات الأغاني</string>
+    <string name="now_playing">يتم الآن تشغيل %1$s لـ %2$s</string>
+</resources>
