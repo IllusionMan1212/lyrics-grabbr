@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.LyricsGrabbr" parent="Theme.Material3.DayNight.NoActionBar" />
+
+    <style name="Theme.LyricsGrabbr.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#FF662D91</item>
+
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="windowSplashScreenAnimationDuration">800</item>
+
+        <item name="postSplashScreenTheme">@style/Theme.LyricsGrabbr</item>
+    </style>
+</resources>
