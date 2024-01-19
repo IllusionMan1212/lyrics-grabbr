@@ -27,7 +27,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,15 +37,15 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -62,6 +61,7 @@ import com.illusionman1212.lyricsgrabbr.ui.theme.ColorSecondaryLight
 import com.illusionman1212.lyricsgrabbr.data.Theme
 import com.illusionman1212.lyricsgrabbr.ui.components.LGIconButton
 import com.illusionman1212.lyricsgrabbr.utils.annotatedStringResource
+import com.illusionman1212.lyricsgrabbr.utils.mirror
 import com.illusionman1212.lyricsgrabbr.viewmodels.SettingsState
 import com.illusionman1212.lyricsgrabbr.viewmodels.SettingsViewModel
 import kotlinx.coroutines.runBlocking
@@ -131,25 +131,23 @@ fun SettingsPage(
 
     Scaffold(
         topBar = {
-            // TODO: on RTL languages all newer(only?) android systems change the direction of the status bar
-            //  including all its children, so we need to figure out how to position stuff to the right
-            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .padding(vertical = 8.dp, horizontal = 4.dp),
-                ) {
-                    LGIconButton(tooltip = stringResource(id = R.string.go_back), onClick = goBack) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = stringResource(
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(vertical = 8.dp, horizontal = 4.dp)
+                    .fillMaxWidth(),
+            ) {
+                LGIconButton(tooltip = stringResource(id = R.string.go_back), onClick = goBack) {
+                    Icon(
+                        modifier = Modifier.mirror(),
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = stringResource(
                             id = R.string.go_back
                         ) )
-                    }
-                    Text(text = stringResource(id = R.string.settings), style = MaterialTheme.typography.titleLarge)
                 }
+                Text(text = stringResource(id = R.string.settings), style = MaterialTheme.typography.titleLarge)
             }
         },
     ) { padding ->
@@ -278,6 +276,7 @@ fun Lyrics(viewModel: SettingsViewModel, uiState: SettingsState) {
             val spotifyDesc = annotatedStringResource(R.string.spotify_client_id_desc) {
                 when (it.key) {
                     "href" -> SpanStyle(color = linkColor, textDecoration = TextDecoration.Underline)
+                    "weight" -> SpanStyle(fontWeight = FontWeight.Bold, fontStyle = FontStyle.Italic)
                     else -> null
                 }
             }

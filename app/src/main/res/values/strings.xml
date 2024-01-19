@@ -36,7 +36,7 @@
     <string name="use_spotify_api">Use Spotify for lyrics</string>
     <string name="spotify_client_id" translatable="false">Spotify Client ID</string>
     <string name="not_set">Not Set</string>
-    <string name="spotify_client_id_desc">This app can use Spotify\'s Web API to get lyrics. You need to provide a Spotify Client ID to use this feature. You can get one from <annotation href="https://developer.spotify.com/dashboard/applications">here</annotation>.\nThis only works if you\'re playing music from the Spotify player.</string>
+    <string name="spotify_client_id_desc">This app can use Spotify\'s Web API to get lyrics. You need to provide a Spotify Client ID to use this feature. You can get one from <annotation href="https://developer.spotify.com/dashboard/applications">here</annotation>.\n<annotation weight="bold">This only works if you\'re playing music from the Spotify player.</annotation></string>
 
     <!--  Lyrics  -->
     <string name="lyrics">Lyrics</string>

@@ -48,6 +48,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -102,7 +103,6 @@ fun HomePage(
     homeViewModel: HomeViewModel = viewModel(
         factory = HomeViewModel.Factory,
     ),
-    settingsViewModel: SettingsViewModel,
     lyricsViewModel: LyricsViewModel,
     lastNotification: MutableStateFlow<NotificationEvent?>
 ) {
@@ -141,7 +141,7 @@ fun HomePage(
 
     val song = lastNotification.collectAsStateWithLifecycle().value
     val uiState = homeViewModel.uiState.collectAsStateWithLifecycle().value
-    var getLyricsFromSpotify by remember { mutableStateOf(false)}
+    var getLyricsFromSpotify by rememberSaveable { mutableStateOf(false)}
 
     LaunchedEffect(Unit) {
         if (!shouldShowNotificationPermissionRationale)

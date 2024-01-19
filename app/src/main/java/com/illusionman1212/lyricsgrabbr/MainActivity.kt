@@ -123,7 +123,6 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate(Routes.Lyrics.route)
                                 },
                                 lyricsViewModel = lyricsViewModel,
-                                settingsViewModel = settingsViewModel,
                                 goBack = { finish() },
                                 lastNotification = lastNotification,
                             )
