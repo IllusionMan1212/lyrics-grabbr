@@ -51,7 +51,8 @@ data class NotificationEvent(
 )
 
 class MainActivity : ComponentActivity() {
-    var lastNotification: MutableStateFlow<NotificationEvent?> = MutableStateFlow(null)
+    private var lastNotification: MutableStateFlow<NotificationEvent?> = MutableStateFlow(null)
+    private var isReceiverRunning = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -163,9 +164,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun startListening() {
-        val isServiceRunning = NotificationListener.isRunning.value
-
-        if (!isPermissionGranted() || isServiceRunning) {
+        if (!isPermissionGranted() || isReceiverRunning) {
             return
         }
 
@@ -176,6 +175,7 @@ class MainActivity : ComponentActivity() {
         filter.addAction(NotificationListener.NOTIFICATION_INTENT)
         LocalBroadcastManager.getInstance(applicationContext).registerReceiver(NotificationReceiver(), filter)
         ContextCompat.startForegroundService(applicationContext, listenerIntent)
+        isReceiverRunning = true
     }
 
     inner class NotificationReceiver: BroadcastReceiver() {

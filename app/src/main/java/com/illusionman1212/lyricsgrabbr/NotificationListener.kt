@@ -19,9 +19,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 
 class NotificationListener: NotificationListenerService() {
     private var notificationManager : NotificationManagerCompat? = null
@@ -60,13 +57,10 @@ class NotificationListener: NotificationListenerService() {
 
     private fun getStopServiceNotificationAction(): PendingIntent {
         val intent = Intent(android.provider.Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-        return pendingIntent
+        return PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
     }
 
     private fun startForegroundService() {
-        _isRunning.update { true }
-
         startForeground(NOTIFICATION_ID, getInitialNotification())
     }
 
@@ -167,9 +161,6 @@ class NotificationListener: NotificationListenerService() {
     }
 
     companion object {
-        private val _isRunning = MutableStateFlow(false)
-        val isRunning = _isRunning.asStateFlow()
-
         const val NOTIFICATION_INTENT = "notification_event"
         const val NOTIFICATION_PACKAGE_NAME = "package_name"
         const val NOTIFICATION_PACKAGE_ARTIST = "package_artist"
