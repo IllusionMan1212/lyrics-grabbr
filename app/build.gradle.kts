@@ -51,6 +51,7 @@ android {
             )
             signingConfig = signingConfigs.getByName("release")
 
+            // https://developer.android.com/build/configure-apk-splits#configure-abi-split
             splits {
                 abi {
                     // Enables building multiple APKs per ABI.
