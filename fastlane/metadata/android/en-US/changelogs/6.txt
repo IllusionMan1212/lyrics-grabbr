@@ -1,0 +1,2 @@
+- Rewrote the app in Kotlin with jetpack compose
+- Added ability to use Spotify for lyrics
