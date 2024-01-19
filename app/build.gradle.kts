@@ -50,6 +50,20 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("release")
+
+            splits {
+                abi {
+                    // Enables building multiple APKs per ABI.
+                    isEnable = true
+                    // By default all ABIs are included, so use reset() and include to specify that we only
+                    // want APKs for armeabi-v7a, arm64-v8a, x86 and x86_64.
+                    // Resets the list of ABIs that Gradle should create APKs for to none.
+                    reset()
+                    include("x86_64", "x86", "armeabi-v7a", "arm64-v8a")
+
+                    isUniversalApk = true
+                }
+            }
         }
     }
     compileOptions {
@@ -69,8 +83,9 @@ android {
     androidComponents {
         val abiVersionCodes = mapOf(
             "x86_64" to 1,
-            "armeabi-v7a" to 2,
-            "arm64-v8a" to 3,
+            "x86" to 2,
+            "armeabi-v7a" to 3,
+            "arm64-v8a" to 4,
         )
 
         onVariants { variant ->
