@@ -22,21 +22,25 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.illusionman1212.lyricsgrabbr.R
 import com.illusionman1212.lyricsgrabbr.ui.components.LGIconButton
+import com.illusionman1212.lyricsgrabbr.utils.mirror
 import com.illusionman1212.lyricsgrabbr.viewmodels.LyricsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -82,6 +86,7 @@ fun LyricsPage(
                         onClick = goBack
                     ) {
                         Icon(
+                            modifier = Modifier.mirror(),
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = stringResource(
                                 id = R.string.go_back
@@ -107,23 +112,39 @@ fun LyricsPage(
             if (uiState.isLoading) {
                 CircularProgressIndicator()
             } else {
-                if (uiState.lyrics.isEmpty()) {
+                if (uiState.error != null) {
+                    Text(
+                        uiState.error,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(bottom = 32.dp)
+                    )
+                } else if (uiState.lyrics.isEmpty()) {
                     Instrumental()
                 } else {
-                    Column(Modifier.padding(top = 12.dp, start = 12.dp, end = 12.dp, bottom = 32.dp)) {
-                        SelectionContainer {
-                            TextField(
-                                value = uiState.lyrics,
-                                onValueChange = {},
-                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                                readOnly = true,
-                                colors = TextFieldDefaults.colors(
-                                    focusedContainerColor = Color.Transparent,
-                                    unfocusedContainerColor = Color.Transparent,
-                                    focusedIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent,
-                                ),
+
+                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                        Column(
+                            Modifier.padding(
+                                top = 12.dp,
+                                start = 12.dp,
+                                end = 12.dp,
+                                bottom = 32.dp
                             )
+                        ) {
+                            SelectionContainer {
+                                TextField(
+                                    value = uiState.lyrics,
+                                    onValueChange = {},
+                                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                                    readOnly = true,
+                                    colors = TextFieldDefaults.colors(
+                                        focusedContainerColor = Color.Transparent,
+                                        unfocusedContainerColor = Color.Transparent,
+                                        focusedIndicatorColor = Color.Transparent,
+                                        unfocusedIndicatorColor = Color.Transparent,
+                                    ),
+                                )
+                            }
                         }
                     }
                 }

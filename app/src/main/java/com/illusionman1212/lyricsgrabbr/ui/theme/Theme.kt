@@ -115,6 +115,9 @@ fun LyricsGrabbrTheme(
         }
     }
 
+    // BUG: color is not being set on older android version (Marshmallow and others).
+    //  The navigation bar color causes the nav buttons to be very hard to see
+    //  in light mode because the buttons are white.
     DisposableEffect(darkTheme) {
         (context as ComponentActivity).enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.auto(

@@ -1,5 +1,6 @@
 import java.io.FileInputStream
 import java.util.Properties
+import com.android.build.api.variant.FilterConfiguration.FilterType.ABI
 
 plugins {
     id("com.android.application")
@@ -21,8 +22,8 @@ android {
         applicationId = "com.illusionman1212.lyricsgrabbr"
         minSdk = 23
         targetSdk = 34
-        versionCode = 5
-        versionName = "0.4.0"
+        versionCode = 6
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -64,11 +65,26 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            excludes += "/META-INF/DEPENDENCIES"
-            excludes += "mozilla/*"
+
+    androidComponents {
+        val abiVersionCodes = mapOf(
+            "x86_64" to 1,
+            "armeabi-v7a" to 2,
+            "arm64-v8a" to 3,
+        )
+
+        onVariants { variant ->
+            // Assigns a different version code for each output APK
+            // other than the universal APK.
+            variant.outputs.forEach { output ->
+                val name = output.filters.find { it.filterType == ABI }?.identifier
+
+                // Stores the value of abiCodes that is associated with the ABI for this variant.
+                val abiCode = abiVersionCodes[name] ?: 0
+                // Assigns the new version code to output.versionCode, which changes the version code
+                // for only the output APK, not for the variant itself.
+                output.versionCode.set((output.versionCode.get() ?: 0) * 10 + abiCode)
+            }
         }
     }
 }
@@ -93,7 +109,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
     implementation("io.coil-kt:coil:2.5.0")
     implementation("io.coil-kt:coil-compose:2.5.0")
-    implementation("it.skrape:skrapeit:1.2.2")
     implementation("org.jsoup:jsoup:1.17.2")
     implementation("com.adamratzman:spotify-api-kotlin-core:4.0.2")
 

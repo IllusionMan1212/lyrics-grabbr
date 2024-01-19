@@ -37,7 +37,7 @@
     <string name="use_spotify_api">استخدم Spotify للكلمات</string>
     <string name="spotify_client_id">Spotify Client ID</string>
     <string name="not_set">خالي</string>
-    <string name="spotify_client_id_desc">يمكن لهذا التطبيق استخدام واجهة برمجة تطبيقات الويب الخاصة بـ Spotify للحصول على كلمات الأغاني. تحتاج إلى تقديم Spotify Client ID لاستخدام هذه الميزة. يمكنك الحصول على واحدة من <annotation href="https://developer.spotify.com/dashboard/applications">هنا</annotation>.\nلا يعمل هذا إلا إذا كنت تقوم بتشغيل الموسيقى من مشغل Spotify.</string>
+    <string name="spotify_client_id_desc">يمكن لهذا التطبيق استخدام واجهة برمجة تطبيقات الويب الخاصة بـ Spotify للحصول على كلمات الأغاني. تحتاج إلى تقديم Spotify Client ID لاستخدام هذه الميزة. يمكنك الحصول على واحدة من <annotation href="https://developer.spotify.com/dashboard/applications">هنا</annotation>.\n<annotation weight="bold">لا يعمل هذا إلا إذا كنت تقوم بتشغيل الموسيقى من مشغل Spotify.</annotation></string>
 
     <!--  Lyrics  -->
     <string name="lyrics">كلمات الأغنية</string>

@@ -23,7 +23,7 @@ class LGApp: Application() {
     lateinit var lyricsRepository: LyricsRepository
     val credentialStore by lazy {
         SpotifyDefaultCredentialStore(
-            clientId = "10d81ce453e743559ea362df2e6a1fd2",
+            clientId = "",
             redirectUri = SPOTIFY_REDIRECT_URI,
             applicationContext = applicationContext
         )
