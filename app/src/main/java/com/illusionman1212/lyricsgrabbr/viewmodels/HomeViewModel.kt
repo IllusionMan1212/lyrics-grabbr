@@ -2,17 +2,14 @@ package com.illusionman1212.lyricsgrabbr.viewmodels
 
 import android.content.Context
 import android.net.Uri
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.adamratzman.spotify.SpotifyClientApi
 import com.illusionman1212.lyricsgrabbr.LGApp
 import com.illusionman1212.lyricsgrabbr.NotificationEvent
-import com.illusionman1212.lyricsgrabbr.R
 import com.illusionman1212.lyricsgrabbr.data.HomeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -101,32 +98,6 @@ class HomeViewModel(private val context: Context, private val homeRepository: Ho
 
     fun setSong(song: NotificationEvent) {
         _uiState.value = _uiState.value.copy(isLoading = true, notification = song, error = null)
-    }
-
-    fun makeRequestToSpotify(spotifyApi: SpotifyClientApi) {
-        viewModelScope.launch {
-            val track = spotifyApi.player.getCurrentlyPlaying()?.item
-
-            if (track?.id == null) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    error = context.resources.getString(R.string.no_spotify_song_playing)
-                )
-            } else {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    error = null,
-                    results = listOf(SearchResult(
-                        title = _uiState.value.notification!!.title,
-                        artist = _uiState.value.notification!!.artist,
-                        url = track.asTrack?.externalUrls?.spotify?.toUri() ?: Uri.EMPTY,
-                        artistUrl = track.asTrack?.artists?.get(0)?.externalUrls?.spotify?.toUri() ?: Uri.EMPTY,
-                        thumbnail = track.asTrack?.album?.images?.get(0)?.url?.toUri() ?: Uri.EMPTY,
-                        id = track.id!!,
-                    ))
-                )
-            }
-        }
     }
 
     fun makeRequestToGenius(song: String, artist: String) {

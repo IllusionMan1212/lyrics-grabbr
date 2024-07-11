@@ -31,19 +31,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".SpotifyPkceLoginActivityImpl"
-            android:exported="true"
-            android:launchMode="singleTop"
-            >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="lyricsgrabbr" android:host="spotify-auth" />
-            </intent-filter>
-        </activity>
 
         <service
             android:label="Lyrics Grabbr Notifications Listener"

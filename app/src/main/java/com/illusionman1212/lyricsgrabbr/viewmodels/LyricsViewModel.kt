@@ -22,7 +22,6 @@ data class LyricsState(
     val artist: String = "",
     val url: Uri = Uri.EMPTY,
     val trackId: String = "",
-    val useSpotifyApi: Boolean = false,
 
     // set by Lyrics screen
     val lyrics: String = "",
@@ -35,24 +34,9 @@ class LyricsViewModel(private val lyricsRepository: LyricsRepository): ViewModel
     private val _uiState = MutableStateFlow(LyricsState())
     val uiState = _uiState.asStateFlow()
 
-    fun onSongChange(trackId: String, title: String, subtitle: String, url: Uri, useSpotifyApi: Boolean) {
+    fun onSongChange(trackId: String, title: String, subtitle: String, url: Uri) {
         _uiState.update {
-            it.copy(song = title, artist = subtitle, url = url, useSpotifyApi = useSpotifyApi, trackId = trackId)
-        }
-    }
-
-    fun fetchLyricsFromSpotify() {
-        _uiState.value = _uiState.value.copy(isLoading = true, lyrics = "")
-
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val (lyrics, isSuccess) = lyricsRepository.fetchLyricsFromSpotify(uiState.value.trackId)
-                if (isSuccess) {
-                    _uiState.value = _uiState.value.copy(isLoading = false, lyrics = lyrics)
-                } else {
-                    _uiState.value = _uiState.value.copy(isLoading = false, error = lyrics, lyrics = "")
-                }
-            }
+            it.copy(song = title, artist = subtitle, url = url, trackId = trackId)
         }
     }
 

@@ -1,6 +1,5 @@
 package com.illusionman1212.lyricsgrabbr
 
-import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -22,7 +21,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -60,10 +58,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val context = LocalContext.current
-            val activity = context as Activity
-            val application = activity.application as LGApp
-
             val settingsViewModel: SettingsViewModel = viewModel(
                 factory = SettingsViewModel.Factory
             )
@@ -83,7 +77,6 @@ class MainActivity : ComponentActivity() {
             }
 
             runBlocking {
-                settingsViewModel.updateSpotifyAuthStatus(application.credentialStore.spotifyToken?.refreshToken != null)
                 appTheme.intValue = settingsViewModel.getAppTheme()
             }
 

@@ -54,11 +54,7 @@ fun LyricsPage(
     val uiState = lyricsViewModel.uiState.collectAsStateWithLifecycle().value
 
     LaunchedEffect(uiState.song, uiState.artist, uiState.url) {
-        if (uiState.useSpotifyApi) {
-            lyricsViewModel.fetchLyricsFromSpotify()
-        } else {
-            lyricsViewModel.fetchLyricsFromGenius()
-        }
+        lyricsViewModel.fetchLyricsFromGenius()
     }
 
     Scaffold(

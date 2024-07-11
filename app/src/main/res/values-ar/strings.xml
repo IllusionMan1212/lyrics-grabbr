@@ -9,7 +9,6 @@
     <string name="timeout">لقد انتهت مهلة الطلب، حاول مرة أخرى لاحقًا</string>
     <string name="generic_error">لقد حدث خطأ، حاول مرة أخرى لاحقاً</string>
     <string name="retry">أعد المحاولة</string>
-    <string name="spotify_no_lyrics_error">عذرًا، لا يحتوي Spotify على كلمات لهذه الأغنية</string>
 
     <!--  Home  -->
     <string name="no_supported_player">لا يوجد مشغل مدعوم قيد التشغيل</string>
@@ -25,7 +24,6 @@
     <string name="notification_post_permission_desc">يتطلب هذا التطبيق أذونات الإشعارات لبدء خدمة مقدمة بغرض الاستماع إلى إشعارات الموسيقى، ولا يمكن أن يعمل بدونها.</string>
     <string name="notification_post_permission_not_granted">لم يتم منح إذن الإشعارات، لن يعمل التطبيق بشكل صحيح</string>
     <string name="grant_permission">منح الإذن</string>
-    <string name="no_spotify_song_playing">No song is playing on Spotify</string>
 
     <!--  Settings  -->
     <string name="settings">الإعدادات</string>
@@ -34,10 +32,6 @@
     <string name="theme_light">نهار</string>
     <string name="theme_dark">ليلي</string>
     <string name="theme_system">استخدم مظهر النظام</string>
-    <string name="use_spotify_api">استخدم Spotify للكلمات</string>
-    <string name="spotify_client_id">Spotify Client ID</string>
-    <string name="not_set">خالي</string>
-    <string name="spotify_client_id_desc">يمكن لهذا التطبيق استخدام واجهة برمجة تطبيقات الويب الخاصة بـ Spotify للحصول على كلمات الأغاني. تحتاج إلى تقديم Spotify Client ID لاستخدام هذه الميزة. يمكنك الحصول على واحدة من <annotation href="https://developer.spotify.com/dashboard/applications">هنا</annotation>.\n<annotation weight="bold">لا يعمل هذا إلا إذا كنت تقوم بتشغيل الموسيقى من مشغل Spotify.</annotation></string>
 
     <!--  Lyrics  -->
     <string name="lyrics">كلمات الأغنية</string>
