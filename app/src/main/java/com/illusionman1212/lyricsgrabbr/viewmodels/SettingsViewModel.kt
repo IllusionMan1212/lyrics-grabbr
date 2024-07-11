@@ -18,7 +18,6 @@ import kotlinx.coroutines.launch
 
 data class SettingsState(
     val appTheme: Int = Theme.SYSTEM.ordinal,
-    val isSpotifyAuthed: Boolean = false,
 )
 
 class SettingsViewModel(private val settingsPrefsRepo: SettingsPreferencesRepository): ViewModel() {
@@ -33,10 +32,6 @@ class SettingsViewModel(private val settingsPrefsRepo: SettingsPreferencesReposi
         viewModelScope.launch(Dispatchers.IO) {
             settingsPrefsRepo.setTheme(theme)
         }
-    }
-
-    fun updateSpotifyAuthStatus(isAuthed: Boolean) {
-        _uiState.value = _uiState.value.copy(isSpotifyAuthed = isAuthed)
     }
 
     init {

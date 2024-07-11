@@ -90,7 +90,6 @@ import com.illusionman1212.lyricsgrabbr.LGApp
 import com.illusionman1212.lyricsgrabbr.ui.components.forwardingPainter
 import com.illusionman1212.lyricsgrabbr.utils.annotatedStringResource
 import com.illusionman1212.lyricsgrabbr.viewmodels.LyricsViewModel
-import com.illusionman1212.lyricsgrabbr.viewmodels.SettingsViewModel
 import kotlinx.coroutines.launch
 
 
@@ -125,7 +124,7 @@ fun HomePage(
     ) }
     var shouldShowNotificationPermissionRationale by remember { mutableStateOf(
         ActivityCompat.shouldShowRequestPermissionRationale(
-            context as android.app.Activity,
+            context,
             POST_NOTIFICATIONS
         )
     )}
@@ -141,7 +140,6 @@ fun HomePage(
 
     val song = lastNotification.collectAsStateWithLifecycle().value
     val uiState = homeViewModel.uiState.collectAsStateWithLifecycle().value
-    var getLyricsFromSpotify by rememberSaveable { mutableStateOf(false)}
 
     LaunchedEffect(Unit) {
         if (!shouldShowNotificationPermissionRationale)
@@ -159,17 +157,9 @@ fun HomePage(
 
     LaunchedEffect(song) {
         if (song != null && song.title != uiState.notification?.title && song.artist != uiState.notification?.artist) {
-            val spotifyApi = application.credentialStore.getSpotifyClientPkceApi()
-            val useSpotifyApi = song.packageName == "com.spotify.music" && spotifyApi != null
-            getLyricsFromSpotify = useSpotifyApi
-
             homeViewModel.setSong(song)
 
-            if (useSpotifyApi) {
-                homeViewModel.makeRequestToSpotify(spotifyApi!!)
-            } else {
-                homeViewModel.makeRequestToGenius(song.title, song.artist)
-            }
+            homeViewModel.makeRequestToGenius(song.title, song.artist)
         }
     }
 
@@ -335,7 +325,7 @@ fun HomePage(
                                         },
                                         navigateToLyrics = navigateToLyrics,
                                         setLyricsTitle = { id, title, subtitle, url ->
-                                            lyricsViewModel.onSongChange(id, title, subtitle, url, getLyricsFromSpotify)
+                                            lyricsViewModel.onSongChange(id, title, subtitle, url)
                                         },
                                     )
                                 }
