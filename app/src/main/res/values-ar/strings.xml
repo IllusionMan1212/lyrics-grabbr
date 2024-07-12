@@ -32,6 +32,8 @@
     <string name="theme_light">نهار</string>
     <string name="theme_dark">ليلي</string>
     <string name="theme_system">استخدم مظهر النظام</string>
+    <string name="language">اللغة</string>
+    <string name="_default">الإفتراضي</string>
 
     <!--  Lyrics  -->
     <string name="lyrics">كلمات الأغنية</string>

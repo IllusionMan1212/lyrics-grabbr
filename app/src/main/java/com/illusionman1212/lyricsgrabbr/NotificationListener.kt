@@ -18,6 +18,7 @@ import android.service.notification.StatusBarNotification
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.core.os.BundleCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 class NotificationListener: NotificationListenerService() {
@@ -113,14 +114,11 @@ class NotificationListener: NotificationListenerService() {
         if (ContextCompat.checkSelfPermission(this, POST_NOTIFICATIONS) != PERMISSION_GRANTED) {
             return
         }
-        // Apparently the new getParcelable API is buggy and throws an exception if used.
-        // so we continue to use the deprecated API even on newer versions.
-        // https://issuetracker.google.com/issues/240585930
-        val mediaSessionToken = sbn.notification.extras.getParcelable<MediaSession.Token>(Notification.EXTRA_MEDIA_SESSION)
+
+        val mediaSessionToken = BundleCompat.getParcelable(sbn.notification.extras, Notification.EXTRA_MEDIA_SESSION, MediaSession.Token::class.java)
             ?: return
 
         val mediaCtrl = MediaController(context, mediaSessionToken)
-        val duration = mediaCtrl.metadata?.getLong(MediaMetadata.METADATA_KEY_DURATION)?.div(1000)
         val playbackState = mediaCtrl.playbackState?.state
         val albumArt = mediaCtrl.metadata?.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART)
 
@@ -133,7 +131,6 @@ class NotificationListener: NotificationListenerService() {
         intent.putExtra(NOTIFICATION_PACKAGE_NAME, sbn.packageName)
         intent.putExtra(NOTIFICATION_PACKAGE_ARTIST, packageArtist)
         intent.putExtra(NOTIFICATION_PACKAGE_SONG_TITLE, packageSongTitle)
-        intent.putExtra(NOTIFICATION_PACKAGE_DURATION, duration)
         intent.putExtra(NOTIFICATION_PACKAGE_PLAYBACK_STATE, playbackState)
 
         if (playbackState == PlaybackState.STATE_PAUSED) {
@@ -166,7 +163,6 @@ class NotificationListener: NotificationListenerService() {
         const val NOTIFICATION_PACKAGE_ARTIST = "package_artist"
         const val NOTIFICATION_PACKAGE_SONG_TITLE = "package_song_title"
         const val NOTIFICATION_PACKAGE_PLAYBACK_STATE = "package_playback_state"
-        const val NOTIFICATION_PACKAGE_DURATION = "package_duration"
         const val NOTIFICATION_ID = 1
         const val NOTIFICATION_CHANNEL_ID = "Lyrics"
         const val START_FOREGROUND_SERVICE_ACTION = "START_SERVICE"

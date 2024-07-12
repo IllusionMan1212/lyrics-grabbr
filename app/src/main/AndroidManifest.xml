@@ -12,6 +12,7 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
+        android:localeConfig="@xml/locales_config"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -21,7 +22,7 @@
 
         <activity
             android:name=".MainActivity"
-            android:configChanges="screenSize|screenLayout|keyboardHidden|orientation"
+            android:configChanges="screenSize|screenLayout|keyboardHidden|orientation|locale"
             android:exported="true"
             android:theme="@style/Theme.LyricsGrabbr.Splash"
         >
@@ -44,6 +45,16 @@
             <property
                 android:name="android.app.NOTIFICATION_LISTENER"
                 android:value="Media playback notification listener service" />
+        </service>
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false"
+        >
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true"
+            />
         </service>
     </application>
 </manifest>
