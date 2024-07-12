@@ -20,15 +20,29 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.BundleCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.illusionman1212.lyricsgrabbr.data.SettingsPreferencesRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class NotificationListener: NotificationListenerService() {
     private var notificationManager : NotificationManagerCompat? = null
+    private lateinit var settingsPrefsRepo: SettingsPreferencesRepository
+    private val serviceScope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreate() {
         super.onCreate()
 
         initNotificationChannels(this)
         notificationManager = NotificationManagerCompat.from(applicationContext)
+        settingsPrefsRepo = (application as LGApp).settingsPreferencesRepository
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        serviceScope.cancel()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -53,7 +67,11 @@ class NotificationListener: NotificationListenerService() {
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
-        sendNotificationBroadcast(sbn, applicationContext)
+        serviceScope.launch {
+            val whitelist = settingsPrefsRepo.preferences.first().whitelist
+            if (sbn.packageName !in whitelist) return@launch
+            sendNotificationBroadcast(sbn, applicationContext)
+        }
     }
 
     private fun getStopServiceNotificationAction(): PendingIntent {
@@ -91,8 +109,13 @@ class NotificationListener: NotificationListenerService() {
 
     private fun getCurrentNotifications(context: Context) {
         val sbns = activeNotifications
-        for (sbn in sbns) {
-            sendNotificationBroadcast(sbn, context)
+        serviceScope.launch {
+            val whitelist = settingsPrefsRepo.preferences.first().whitelist
+
+            for (sbn in sbns) {
+                if (sbn.packageName !in whitelist) continue
+                sendNotificationBroadcast(sbn, context)
+            }
         }
     }
 

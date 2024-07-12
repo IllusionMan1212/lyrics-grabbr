@@ -33,6 +33,10 @@
     <string name="theme_system">Use System Theme</string>
     <string name="language">Language</string>
     <string name="_default">Default</string>
+    <string name="listening">Listening</string>
+    <string name="whitelist">Whitelist</string>
+    <string name="whitelist_apps">Whitelist Apps</string>
+    <string name="whitelist_desc">Choose which apps Lyrics Grabbr will listen to</string>
 
     <!--  Lyrics  -->
     <string name="lyrics">Lyrics</string>
