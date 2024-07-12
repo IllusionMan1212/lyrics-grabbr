@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Translate
@@ -61,6 +62,7 @@ private val Themes = hashMapOf(
 @Composable
 fun SettingsPage(
     goBack: () -> Unit,
+    navigateToWhitelist: () -> Unit,
     viewModel: SettingsViewModel,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -94,6 +96,7 @@ fun SettingsPage(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Appearance(viewModel, uiState)
+            Listening(navigateToWhitelist)
         }
     }
 }
@@ -135,6 +138,35 @@ fun Appearance(viewModel: SettingsViewModel, uiState: SettingsState) {
         LanguageDialog(
             onDismiss = { languageOpenDialog = false },
         )
+    }
+}
+
+@Composable
+private fun Listening(navigateToWhitelist: () -> Unit) {
+    SettingGroup(title = stringResource(id = R.string.listening)) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .clickable { navigateToWhitelist() }
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(vertical = 8.dp)
+            ) {
+                Icon(imageVector = Icons.Default.Apps, contentDescription = null, modifier = Modifier.width(56.dp))
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(text = stringResource(id = R.string.whitelist_apps), color = MaterialTheme.colorScheme.onBackground)
+                    Text(
+                        text = stringResource(id = R.string.whitelist_desc),
+                        color = ColorSecondaryLight,
+                        fontSize = 14.sp,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(end = 24.dp)
+                    )
+                }
+            }
+        }
     }
 }
 

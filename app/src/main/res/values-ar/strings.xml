@@ -34,6 +34,10 @@
     <string name="theme_system">استخدم مظهر النظام</string>
     <string name="language">اللغة</string>
     <string name="_default">الإفتراضي</string>
+    <string name="listening">الإستماع</string>
+    <string name="whitelist">القائمة البيضاء</string>
+    <string name="whitelist_apps">تطبيقات القائمة البيضاء</string>
+    <string name="whitelist_desc">اختر التطبيقات التي سيستمع التطبيق إلى إشعاراتها</string>
 
     <!--  Lyrics  -->
     <string name="lyrics">كلمات الأغنية</string>

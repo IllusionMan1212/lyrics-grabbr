@@ -35,6 +35,7 @@ import com.illusionman1212.lyricsgrabbr.ui.screens.HomePage
 import com.illusionman1212.lyricsgrabbr.ui.screens.LyricsPage
 import com.illusionman1212.lyricsgrabbr.ui.theme.LyricsGrabbrTheme
 import com.illusionman1212.lyricsgrabbr.ui.screens.SettingsPage
+import com.illusionman1212.lyricsgrabbr.ui.screens.WhitelistPage
 import com.illusionman1212.lyricsgrabbr.viewmodels.LyricsViewModel
 import com.illusionman1212.lyricsgrabbr.viewmodels.SettingsViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -130,6 +131,17 @@ class MainActivity : AppCompatActivity() {
                         }
                         composable(Routes.Settings.route) {
                             SettingsPage(
+                                goBack = {
+                                    navController.popBackStack()
+                                },
+                                navigateToWhitelist = {
+                                    navController.navigate(Routes.Whitelist.route)
+                                },
+                                viewModel = settingsViewModel,
+                            )
+                        }
+                        composable(Routes.Whitelist.route) {
+                            WhitelistPage(
                                 goBack = {
                                     navController.popBackStack()
                                 },
