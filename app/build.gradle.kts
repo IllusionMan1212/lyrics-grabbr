@@ -9,8 +9,8 @@ plugins {
 }
 
 val keystoreProperties = Properties()
-val keystorePropertiesFile: File? = rootProject.file("keystore.properties")
-if (keystorePropertiesFile?.exists() == true) {
+val keystorePropertiesFile: File = rootProject.file("keystore.properties")
+if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
@@ -30,6 +30,9 @@ android {
             useSupportLibrary = true
         }
         signingConfig = signingConfigs.getByName("debug")
+
+        // https://developer.android.com/guide/topics/resources/app-languages#gradle-config
+        resourceConfigurations.plus(listOf("en", "ar"))
     }
 
     signingConfigs {

@@ -8,6 +8,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -45,10 +46,9 @@ data class NotificationEvent(
     val artist: String,
     val title: String,
     val playbackState: Int,
-    val duration: Long
 )
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     private var lastNotification: MutableStateFlow<NotificationEvent?> = MutableStateFlow(null)
     private var isReceiverRunning = false
 
@@ -175,14 +175,12 @@ class MainActivity : ComponentActivity() {
             val artist = intent.getStringExtra(NotificationListener.NOTIFICATION_PACKAGE_ARTIST)
             val songTitle = intent.getStringExtra(NotificationListener.NOTIFICATION_PACKAGE_SONG_TITLE)
             val playbackState = intent.getIntExtra(NotificationListener.NOTIFICATION_PACKAGE_PLAYBACK_STATE, -1)
-            val duration = intent.getLongExtra(NotificationListener.NOTIFICATION_PACKAGE_DURATION, -1)
             val notifPackageName = intent.getStringExtra(NotificationListener.NOTIFICATION_PACKAGE_NAME)
 
             lastNotification.update { NotificationEvent(
                 title = songTitle!!,
                 artist = artist!!,
                 playbackState = playbackState,
-                duration = duration,
                 packageName = notifPackageName!!,
             ) }
         }

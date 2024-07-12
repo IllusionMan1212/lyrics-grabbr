@@ -30,9 +30,9 @@ import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -48,7 +48,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -86,7 +85,6 @@ import com.illusionman1212.lyricsgrabbr.viewmodels.HomeViewModel
 import com.illusionman1212.lyricsgrabbr.viewmodels.SearchResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import coil.compose.AsyncImage
-import com.illusionman1212.lyricsgrabbr.LGApp
 import com.illusionman1212.lyricsgrabbr.ui.components.forwardingPainter
 import com.illusionman1212.lyricsgrabbr.utils.annotatedStringResource
 import com.illusionman1212.lyricsgrabbr.viewmodels.LyricsViewModel
@@ -106,7 +104,6 @@ fun HomePage(
     lastNotification: MutableStateFlow<NotificationEvent?>
 ) {
     val context = LocalContext.current
-    val application = (context as Activity).application as LGApp
     val lifecycleOwner = LocalLifecycleOwner.current
 
     val lifecycleState by lifecycleOwner.lifecycle.currentStateAsState()
@@ -124,7 +121,7 @@ fun HomePage(
     ) }
     var shouldShowNotificationPermissionRationale by remember { mutableStateOf(
         ActivityCompat.shouldShowRequestPermissionRationale(
-            context,
+            context as Activity,
             POST_NOTIFICATIONS
         )
     )}
@@ -415,7 +412,7 @@ fun Results(
                     )
 
                     if (it != results.last())
-                        Divider()
+                        HorizontalDivider()
                 }
             }
         }

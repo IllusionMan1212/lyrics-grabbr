@@ -1,6 +1,5 @@
 package com.illusionman1212.lyricsgrabbr.viewmodels
 
-import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -85,7 +84,7 @@ data class HomeState(
     val error: String? = null,
 )
 
-class HomeViewModel(private val context: Context, private val homeRepository: HomeRepository): ViewModel() {
+class HomeViewModel(private val homeRepository: HomeRepository): ViewModel() {
     private val _uiState = MutableStateFlow(HomeState())
     val uiState = _uiState.asStateFlow()
     private val json = Json {
@@ -134,7 +133,7 @@ class HomeViewModel(private val context: Context, private val homeRepository: Ho
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as LGApp)
-                HomeViewModel(application.applicationContext, application.homeRepository)
+                HomeViewModel(application.homeRepository)
             }
         }
     }

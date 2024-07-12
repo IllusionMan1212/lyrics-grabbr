@@ -1,5 +1,6 @@
 package com.illusionman1212.lyricsgrabbr.ui.screens
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,10 +13,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.Translate
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -32,10 +35,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.illusionman1212.lyricsgrabbr.R
 import com.illusionman1212.lyricsgrabbr.ui.components.LGAlertDialog
@@ -43,7 +48,7 @@ import com.illusionman1212.lyricsgrabbr.ui.components.LGRadioButton
 import com.illusionman1212.lyricsgrabbr.ui.theme.ColorSecondaryLight
 import com.illusionman1212.lyricsgrabbr.data.Theme
 import com.illusionman1212.lyricsgrabbr.ui.components.LGIconButton
-import com.illusionman1212.lyricsgrabbr.utils.mirror
+import com.illusionman1212.lyricsgrabbr.utils.getLangPreferenceDropdownEntries
 import com.illusionman1212.lyricsgrabbr.viewmodels.SettingsState
 import com.illusionman1212.lyricsgrabbr.viewmodels.SettingsViewModel
 
@@ -72,8 +77,7 @@ fun SettingsPage(
             ) {
                 LGIconButton(tooltip = stringResource(id = R.string.go_back), onClick = goBack) {
                     Icon(
-                        modifier = Modifier.mirror(),
-                        imageVector = Icons.Filled.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(
                             id = R.string.go_back
                         ) )
@@ -97,6 +101,7 @@ fun SettingsPage(
 @Composable
 fun Appearance(viewModel: SettingsViewModel, uiState: SettingsState) {
     var themeOpenDialog by remember { mutableStateOf(false) }
+    var languageOpenDialog by remember { mutableStateOf(false) }
 
     SettingGroup(title = stringResource(id = R.string.appearance)) {
         DialogSetting(
@@ -104,6 +109,17 @@ fun Appearance(viewModel: SettingsViewModel, uiState: SettingsState) {
             value = Themes[uiState.appTheme]?.let { stringResource(it) } ?: "None",
             icon = Icons.Outlined.Palette,
             onClick = { themeOpenDialog = true }
+        )
+        DialogSetting(
+            title = stringResource(id = R.string.language),
+            value = AppCompatDelegate.getApplicationLocales()[0]?.let {
+                AppCompatDelegate.getApplicationLocales()[0]?.getDisplayLanguage(
+                    it
+                )
+            }
+                ?: stringResource(id = R.string._default),
+            icon = Icons.Outlined.Translate,
+            onClick = { languageOpenDialog = true }
         )
     }
     if (themeOpenDialog) {
@@ -113,6 +129,11 @@ fun Appearance(viewModel: SettingsViewModel, uiState: SettingsState) {
             onThemeChange = {
                 viewModel.setTheme(it)
             }
+        )
+    }
+    if (languageOpenDialog) {
+        LanguageDialog(
+            onDismiss = { languageOpenDialog = false },
         )
     }
 }
@@ -160,6 +181,47 @@ fun ThemeDialog(
 }
 
 @Composable
+fun LanguageDialog(
+    onDismiss: () -> Unit,
+) {
+    val langs = LocalContext.current.getLangPreferenceDropdownEntries()
+
+    LGAlertDialog(
+        onDismiss = onDismiss,
+        title = stringResource(id = R.string.language),
+        buttons = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(id = R.string.cancel))
+            }
+        },
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        LazyColumn {
+            item {
+                LGRadioButton(
+                    text = stringResource(id = R.string._default),
+                    onClick = {
+                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
+                    },
+                    selected = AppCompatDelegate.getApplicationLocales().isEmpty,
+                )
+            }
+            for ((key, value) in langs) {
+                item {
+                    LGRadioButton(
+                        text = key,
+                        onClick = {
+                            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(value))
+                        },
+                        selected = AppCompatDelegate.getApplicationLocales()[0]?.language == value,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun SettingGroup(title: String, content: @Composable () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Header(title)
@@ -169,7 +231,7 @@ fun SettingGroup(title: String, content: @Composable () -> Unit) {
 }
 
 @Composable
-fun Header(title: String) {
+private fun Header(title: String) {
     Row(Modifier.padding(start = 56.dp)) {
         Text(text = title, color = MaterialTheme.colorScheme.primary)
     }
