@@ -38,6 +38,8 @@
     <string name="whitelist">القائمة البيضاء</string>
     <string name="whitelist_apps">تطبيقات القائمة البيضاء</string>
     <string name="whitelist_desc">اختر التطبيقات التي سيستمع التطبيق إلى إشعاراتها</string>
+    <string name="search">بحث</string>
+    <string name="clear">مسح</string>
 
     <!--  Lyrics  -->
     <string name="lyrics">كلمات الأغنية</string>
