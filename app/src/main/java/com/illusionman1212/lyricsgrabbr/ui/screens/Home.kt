@@ -433,7 +433,6 @@ fun LongClickBottomSheet(
         dragHandle = {},
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        windowInsets = WindowInsets(top = 0.dp),
     ) {
         Column {
             if (artistUri != Uri.EMPTY) {

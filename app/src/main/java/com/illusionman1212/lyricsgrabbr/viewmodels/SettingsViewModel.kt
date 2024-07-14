@@ -28,10 +28,12 @@ data class AppInfo(
 
 data class SettingsState(
     val appTheme: Int = Theme.SYSTEM.ordinal,
-    val applications: MutableMap<String, AppInfo> = mutableMapOf(),
+    val applications: Map<String, AppInfo> = emptyMap(),
+    val whitelistSearchQuery: String = "",
 )
 
 class SettingsViewModel(private val settingsPrefsRepo: SettingsPreferencesRepository, context: Context): ViewModel() {
+    private var immutablePackages: Map<String, AppInfo> = emptyMap()
     private val _uiState = MutableStateFlow(SettingsState())
     val uiState = _uiState.asStateFlow()
 
@@ -50,7 +52,7 @@ class SettingsViewModel(private val settingsPrefsRepo: SettingsPreferencesReposi
     }
 
     private fun getPackages(context: Context) {
-        if (uiState.value.applications.isNotEmpty()) return
+        if (immutablePackages.isNotEmpty()) return
 
         viewModelScope.launch(Dispatchers.IO) {
             val pm = context.packageManager
@@ -70,6 +72,7 @@ class SettingsViewModel(private val settingsPrefsRepo: SettingsPreferencesReposi
                     isWhitelisted = pkg.packageName in whitelistedApps
                 )
             }
+            immutablePackages = apps
             _uiState.update {
                 SettingsState(
                     appTheme = uiState.value.appTheme,
@@ -79,16 +82,63 @@ class SettingsViewModel(private val settingsPrefsRepo: SettingsPreferencesReposi
         }
     }
 
+    fun refreshPackages(context: Context) {
+        _uiState.update {
+            val apps = uiState.value.applications.toMutableMap()
+            apps.clear()
+            it.copy(whitelistSearchQuery = "", applications = apps)
+        }
+        val apps = immutablePackages.toMutableMap()
+        apps.clear()
+        immutablePackages = apps
+        getPackages(context)
+    }
+
+    fun filterPackages(query: String) {
+        _uiState.update { state ->
+            state.copy(
+                applications = immutablePackages.filter {
+                    it.value.displayName.lowercase().contains(query.lowercase())
+                }.toMutableMap(),
+                whitelistSearchQuery = query,
+            )
+        }
+    }
+
+    fun clearWhitelistSearch() {
+        _uiState.update {
+            it.copy(applications = immutablePackages, whitelistSearchQuery = "")
+        }
+    }
+
     fun addToWhitelist(packageName: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.value.applications[packageName]?.let { it.isWhitelisted = true }
+            _uiState.update { state ->
+                val apps = immutablePackages.toMutableMap()
+                apps[packageName] = apps[packageName]!!.copy(isWhitelisted = true)
+                immutablePackages = apps
+                state.copy(
+                    applications = immutablePackages.filter {
+                        it.value.displayName.lowercase().contains(uiState.value.whitelistSearchQuery.lowercase())
+                    }.toMutableMap(),
+                )
+            }
             settingsPrefsRepo.addToWhitelist(packageName)
         }
     }
 
     fun removeFromWhitelist(packageName: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.value.applications[packageName]?.let { it.isWhitelisted = false }
+            _uiState.update { state ->
+                val apps = immutablePackages.toMutableMap()
+                apps[packageName] = apps[packageName]!!.copy(isWhitelisted = false)
+                immutablePackages = apps
+                state.copy(
+                    applications = immutablePackages.filter {
+                        it.value.displayName.lowercase().contains(uiState.value.whitelistSearchQuery.lowercase())
+                    }.toMutableMap(),
+                )
+            }
             settingsPrefsRepo.removeFromWhitelist(packageName)
         }
     }
