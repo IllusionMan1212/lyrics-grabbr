@@ -25,7 +25,7 @@ fun annotatedStringResource(
     val spannedString = SpannedString(resources.getText(id))
     val resultBuilder = AnnotatedString.Builder()
     resultBuilder.append(spannedString.toString())
-    spannedString.getSpans<Annotation>(0, spannedString.length, Annotation::class.java).forEach { annotation ->
+    spannedString.getSpans(0, spannedString.length, Annotation::class.java).forEach { annotation ->
         val spanStart = spannedString.getSpanStart(annotation)
         val spanEnd = spannedString.getSpanEnd(annotation)
         resultBuilder.addStringAnnotation(

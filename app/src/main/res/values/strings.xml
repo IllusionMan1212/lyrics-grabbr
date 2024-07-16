@@ -4,7 +4,6 @@
     <!--  General  -->
     <string name="go_back">Go Back</string>
     <string name="cancel">Cancel</string>
-    <string name="confirm">Confirm</string>
     <string name="timeout">Request has timed out, try again later</string>
     <string name="generic_error">An error has occurred, try again later</string>
     <string name="retry">Retry</string>
@@ -32,16 +31,18 @@
     <string name="theme_dark">Dark</string>
     <string name="theme_system">Use System Theme</string>
     <string name="language">Language</string>
-    <string name="_default">Default</string>
+    <string name="_default">Use System Language</string>
     <string name="listening">Listening</string>
-    <string name="whitelist">Whitelist</string>
     <string name="whitelist_apps">Whitelist Apps</string>
     <string name="whitelist_desc">Choose which apps Lyrics Grabbr will listen to</string>
     <string name="search">Search</string>
     <string name="clear">Clear</string>
+    <string name="power_management">Power Management</string>
+    <string name="keep_device_awake_title">Keep device awake</string>
+    <string name="keep_device_awake_desc">Keep device awake on lyrics page (Increases battery usage)</string>
+    <string name="screen_will_stay_on">Screen Will Stay On</string>
 
     <!--  Lyrics  -->
-    <string name="lyrics">Lyrics</string>
     <string name="instrumental">This song is an instrumental</string>
 
     <!--  Notification  -->

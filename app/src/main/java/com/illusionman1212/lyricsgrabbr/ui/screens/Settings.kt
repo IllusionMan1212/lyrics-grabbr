@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.ScreenLockPortrait
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Translate
 import androidx.compose.material3.Icon
@@ -34,7 +35,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -97,12 +97,13 @@ fun SettingsPage(
         ) {
             Appearance(viewModel, uiState)
             Listening(navigateToWhitelist)
+            PowerManagement(viewModel, uiState)
         }
     }
 }
 
 @Composable
-fun Appearance(viewModel: SettingsViewModel, uiState: SettingsState) {
+private fun Appearance(viewModel: SettingsViewModel, uiState: SettingsState) {
     var themeOpenDialog by remember { mutableStateOf(false) }
     var languageOpenDialog by remember { mutableStateOf(false) }
 
@@ -166,6 +167,20 @@ private fun Listening(navigateToWhitelist: () -> Unit) {
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun PowerManagement(viewModel: SettingsViewModel, uiState: SettingsState) {
+    SettingGroup(title = stringResource(id = R.string.power_management)) {
+        ToggleSetting(
+            title = stringResource(id = R.string.keep_device_awake_title),
+            description = stringResource(id = R.string.keep_device_awake_desc),
+            icon = Icons.Default.ScreenLockPortrait,
+            checked = uiState.keepScreenOn
+        ) {
+            viewModel.toggleKeepScreenOn()
         }
     }
 }
@@ -311,7 +326,8 @@ fun DialogSetting(
 @Composable
 fun ToggleSetting(
     title: String,
-    icon: Painter? = null,
+    description: String? = null,
+    icon: ImageVector? = null,
     checked: Boolean,
     onClick: (Boolean) -> Unit)
 {
@@ -326,11 +342,20 @@ fun ToggleSetting(
             modifier = Modifier.padding(top = 8.dp, end = 24.dp, bottom = 8.dp),
         ) {
             if (icon != null) {
-                Icon(painter = icon, contentDescription = null, Modifier.width(56.dp))
+                Icon(imageVector = icon, contentDescription = null, Modifier.width(56.dp))
             } else {
                 Box(modifier = Modifier.width(56.dp))
             }
-            Text(text = title, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.weight(1.0f))
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(text = title, color = MaterialTheme.colorScheme.onBackground)
+                if (description != null) {
+                    Text(
+                        text = description,
+                        color = ColorSecondaryLight,
+                        fontSize = 14.sp,
+                    )
+                }
+            }
             Switch(
                 checked = checked,
                 onCheckedChange = null,

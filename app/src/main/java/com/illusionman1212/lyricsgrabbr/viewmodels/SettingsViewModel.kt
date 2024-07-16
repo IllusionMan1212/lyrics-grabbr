@@ -30,6 +30,7 @@ data class SettingsState(
     val appTheme: Int = Theme.SYSTEM.ordinal,
     val applications: Map<String, AppInfo> = emptyMap(),
     val whitelistSearchQuery: String = "",
+    val keepScreenOn: Boolean = false,
 )
 
 class SettingsViewModel(private val settingsPrefsRepo: SettingsPreferencesRepository, context: Context): ViewModel() {
@@ -44,6 +45,12 @@ class SettingsViewModel(private val settingsPrefsRepo: SettingsPreferencesReposi
     fun setTheme(theme: Theme) {
         viewModelScope.launch(Dispatchers.IO) {
             settingsPrefsRepo.setTheme(theme)
+        }
+    }
+
+    fun toggleKeepScreenOn() {
+        viewModelScope.launch(Dispatchers.IO) {
+            settingsPrefsRepo.toggleKeepScreenOn()
         }
     }
 
@@ -73,10 +80,9 @@ class SettingsViewModel(private val settingsPrefsRepo: SettingsPreferencesReposi
                 )
             }
             immutablePackages = apps
-            _uiState.update {
-                SettingsState(
-                    appTheme = uiState.value.appTheme,
-                    applications = apps,
+            _uiState.update { state ->
+                state.copy(
+                    applications = apps
                 )
             }
         }
@@ -147,9 +153,12 @@ class SettingsViewModel(private val settingsPrefsRepo: SettingsPreferencesReposi
         getPackages(context)
         viewModelScope.launch {
             settingsPrefsRepo.preferences.collectLatest {
-                _uiState.value = _uiState.value.copy(
-                    appTheme = it.appTheme,
-                )
+                _uiState.update { state ->
+                    state.copy(
+                        appTheme = it.appTheme,
+                        keepScreenOn = it.keepScreenOn,
+                    )
+                }
             }
         }
     }

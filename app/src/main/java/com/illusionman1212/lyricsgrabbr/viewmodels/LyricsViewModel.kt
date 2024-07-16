@@ -41,12 +41,16 @@ class LyricsViewModel(private val lyricsRepository: LyricsRepository): ViewModel
     }
 
     fun fetchLyricsFromGenius() {
-        _uiState.value = _uiState.value.copy(isLoading = true, lyrics = "")
+        _uiState.update { state ->
+            state.copy(isLoading = true, lyrics = "")
+        }
 
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 val lyrics = lyricsRepository.fetchLyricsFromGenius(uiState.value.url)
-                _uiState.value = _uiState.value.copy(isLoading = false, lyrics = lyrics)
+                _uiState.update { state ->
+                    state.copy(isLoading = false, lyrics = lyrics)
+                }
             }
         }
     }
