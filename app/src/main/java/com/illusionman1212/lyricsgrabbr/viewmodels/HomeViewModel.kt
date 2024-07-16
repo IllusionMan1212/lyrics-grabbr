@@ -96,7 +96,9 @@ class HomeViewModel(private val homeRepository: HomeRepository): ViewModel() {
     }
 
     fun setSong(song: NotificationEvent) {
-        _uiState.value = _uiState.value.copy(isLoading = true, notification = song, error = null)
+        _uiState.update { state ->
+            state.copy(isLoading = true, notification = song, error = null)
+        }
     }
 
     fun makeRequestToGenius(song: String, artist: String) {

@@ -5,7 +5,6 @@
     <!--  General  -->
     <string name="go_back">رجوع</string>
     <string name="cancel">إلغاء</string>
-    <string name="confirm">تأكيد</string>
     <string name="timeout">لقد انتهت مهلة الطلب، حاول مرة أخرى لاحقًا</string>
     <string name="generic_error">لقد حدث خطأ، حاول مرة أخرى لاحقاً</string>
     <string name="retry">أعد المحاولة</string>
@@ -33,16 +32,18 @@
     <string name="theme_dark">ليلي</string>
     <string name="theme_system">استخدم مظهر النظام</string>
     <string name="language">اللغة</string>
-    <string name="_default">الإفتراضي</string>
+    <string name="_default">استخدم لغة النظام</string>
     <string name="listening">الإستماع</string>
-    <string name="whitelist">القائمة البيضاء</string>
     <string name="whitelist_apps">تطبيقات القائمة البيضاء</string>
     <string name="whitelist_desc">اختر التطبيقات التي سيستمع التطبيق إلى إشعاراتها</string>
     <string name="search">بحث</string>
     <string name="clear">مسح</string>
+    <string name="power_management">إدارة إستخدام الطافة</string>
+    <string name="keep_device_awake_title">أبق الجهاز مستيقظا</string>
+    <string name="keep_device_awake_desc">أبق الجهاز مستيقظا على صفحة كلمات الأغاني (يزيد من استخدام البطارية)</string>
+    <string name="screen_will_stay_on">ستبقى الشاشة على قيد التشغيل</string>
 
     <!--  Lyrics  -->
-    <string name="lyrics">كلمات الأغنية</string>
     <string name="instrumental">هذه الأغنية موسيقية</string>
 
     <!--  Notification  -->
