@@ -1,0 +1,4 @@
+- A whitelist of apps is now required in order for the app to pick up on notifications from them
+- Completely remove Spotify due to non-FOSS SDK
+- Language settings (help with translations is much appreciated)
+- Added a setting to keep the device awake when reading lyrics
