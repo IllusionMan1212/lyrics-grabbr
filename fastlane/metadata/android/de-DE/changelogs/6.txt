@@ -1,0 +1,2 @@
+- App mit Kotlin und Jetpack Compose neu geschrieben
+- Möglichkeit hinzugefügt, Spotify für Songtexte zu verwenden

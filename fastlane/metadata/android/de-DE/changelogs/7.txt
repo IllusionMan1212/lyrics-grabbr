@@ -1,0 +1,4 @@
+- Eine Whitelist von Apps ist jetzt erforderlich, damit die App Benachrichtigungen von ihnen abrufen kann
+- Spotify wurde aufgrund des nicht-FOSS-SDKs vollständig entfernt
+- Spracheinstellungen (Hilfe bei Übersetzungen ist sehr willkommen)
+- Einstellung hinzugefügt, um das Gerät wach zu halten, während Songtexte angezeigt werden
