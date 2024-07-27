@@ -32,7 +32,7 @@ android {
         signingConfig = signingConfigs.getByName("debug")
 
         // https://developer.android.com/guide/topics/resources/app-languages#gradle-config
-        resourceConfigurations.plus(listOf("en", "ar"))
+        resourceConfigurations.plus(listOf("en", "ar", "de"))
     }
 
     signingConfigs {
