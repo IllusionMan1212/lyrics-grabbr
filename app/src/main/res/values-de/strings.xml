@@ -1,0 +1,54 @@
+<resources>
+    <string name="app_name" translatable="false">Lyrics Grabbr</string>
+
+    <!--  General  -->
+    <string name="go_back">Zurück</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="timeout">Anfrage ist abgelaufen, bitte versuche es später erneut</string>
+    <string name="generic_error">Ein Fehler ist aufgetreten, bitte versuche es später erneut</string>
+    <string name="retry">Erneut versuchen</string>
+
+    <!--  Home  -->
+    <string name="no_supported_player">Keinen unterstützten Player gefunden</string>
+    <string name="open_settings">Einstellungen öffnen</string>
+    <string name="notification_listen_permission">Berechtigung zum Auslesen von Benachrichtigungen</string>
+    <string name="notification_listen_desc">Diese App benötigt die Berechtigung zum Auslesen von Benachrichtigungen, um ordnungsgemäß zu funktionieren. Bitte erteile diese Berechtigung auf dem nächsten Bildschirm.\nBITTE BEACHTEN: der einzige Weg den Dienst zu stoppen ist die Berechtigung zum Auslesen von Benachrichtigungen zu widerrufen.</string>
+    <string name="no_results">Keine Ergebnisse gefunden</string>
+    <string name="found_results">%1$d Ergebnis(se) gefunden</string>
+    <string name="powered_by">Verwendet <annotation href="https://github.com/sv443/geniURL">geniURL</annotation></string>
+    <string name="open_song_page">Seite des Songs öffnen</string>
+    <string name="open_artist_page">Seite des Künstlers öffnen</string>
+    <string name="notification_post_permission">Berechtigung für Benachrichtigungen erforderlich</string>
+    <string name="notification_post_permission_desc">Lyrics Grabbr benötigt die Berechtigung Benachrichtigungen zu lesen, um einen Vordergrunddienst zum Abhören zu starten und kann nicht ohne diese funktionieren.</string>
+    <string name="notification_post_permission_not_granted">Berechtigung zum Abhören von Benachrichtigungen nicht erteilt, daher wird die App wird nicht ordnungsgemäß funktionieren.</string>
+    <string name="grant_permission">Berechtigung erteilen</string>
+
+    <!--  Settings  -->
+    <string name="settings">Einstellungen</string>
+    <string name="appearance">Aussehen</string>
+    <string name="theme">Farbschema</string>
+    <string name="theme_light">Hell</string>
+    <string name="theme_dark">Dunkel</string>
+    <string name="theme_system">Systemstandard</string>
+    <string name="language">Sprache</string>
+    <string name="_default">Systemsprache</string>
+    <string name="listening">Erlaubt</string>
+    <string name="whitelist_apps">Erlaubte Apps</string>
+    <string name="whitelist_desc">Wähle aus, welchen Apps Lyrics Grabbr zuhören soll</string>
+    <string name="search">Suche</string>
+    <string name="clear">Löschen</string>
+    <string name="power_management">Energieeinstellungen</string>
+    <string name="keep_device_awake_title">Gerät wachhalten</string>
+    <string name="keep_device_awake_desc">Gerät auf der Songtext-Seite wachhalten (erhöht den Batterieverbrauch)</string>
+    <string name="screen_will_stay_on">Bildschirm bleibt an</string>
+
+    <!--  Lyrics  -->
+    <string name="instrumental">Dies ist ein instrumentaler Song</string>
+
+    <!--  Notification  -->
+    <string name="service_running">Dienst läuft</string>
+    <string name="stop_service">Dienst anhalten</string>
+    <string name="service_notif_desc_init">Spiele Songs mit einem unterstützten Player, um Songtexte zu erhalten</string>
+    <string name="service_notif_desc_playing">Für den Songtext antippen</string>
+    <string name="now_playing">Es läuft %1$s von %2$s</string>
+</resources>
