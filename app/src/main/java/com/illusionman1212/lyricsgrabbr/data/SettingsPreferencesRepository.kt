@@ -18,6 +18,7 @@ data class SettingsPreferences(
     val appTheme: Int = Theme.SYSTEM.ordinal,
     val whitelist: Set<String> = emptySet(),
     val keepScreenOn: Boolean = false,
+    val whitelistPromptSeen: Boolean = false,
 )
 
 class SettingsPreferencesRepository(
@@ -27,6 +28,7 @@ class SettingsPreferencesRepository(
         private val APP_THEME = intPreferencesKey("app_theme")
         private val WHITELIST = stringSetPreferencesKey("apps_whitelist")
         private val KEEP_SCREEN_ON = booleanPreferencesKey("keep_screen_on")
+        private val WHITELIST_PROMPT_SEEN = booleanPreferencesKey("whitelist_prompt_seen")
     }
 
     val preferences = dataStore.data.map { mapSettingsPreferences(it) }
@@ -55,11 +57,18 @@ class SettingsPreferencesRepository(
         }
     }
 
+    suspend fun discardWhitelistPrompt() {
+        dataStore.edit { prefs ->
+            prefs[WHITELIST_PROMPT_SEEN] = true
+        }
+    }
+
     private fun mapSettingsPreferences(prefs: Preferences): SettingsPreferences {
         return SettingsPreferences(
             prefs[APP_THEME] ?: Theme.SYSTEM.ordinal,
             prefs[WHITELIST] ?: emptySet(),
             prefs[KEEP_SCREEN_ON] ?: false,
+            prefs[WHITELIST_PROMPT_SEEN] ?: false,
         )
     }
 }

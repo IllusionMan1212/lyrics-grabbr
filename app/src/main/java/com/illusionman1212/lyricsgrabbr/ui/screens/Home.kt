@@ -87,6 +87,7 @@ import coil.compose.AsyncImage
 import com.illusionman1212.lyricsgrabbr.ui.components.forwardingPainter
 import com.illusionman1212.lyricsgrabbr.utils.annotatedStringResource
 import com.illusionman1212.lyricsgrabbr.viewmodels.LyricsViewModel
+import com.illusionman1212.lyricsgrabbr.viewmodels.SettingsViewModel
 import kotlinx.coroutines.launch
 
 
@@ -100,6 +101,7 @@ fun HomePage(
         factory = HomeViewModel.Factory,
     ),
     lyricsViewModel: LyricsViewModel,
+    settingsViewModel: SettingsViewModel,
     lastNotification: MutableStateFlow<NotificationEvent?>
 ) {
     val context = LocalContext.current
@@ -115,6 +117,7 @@ fun HomePage(
     var songUri by remember { mutableStateOf(Uri.EMPTY) }
     var showBottomSheet by remember { mutableStateOf(false) }
     var listeningPermission = homeViewModel.getListeningPermission()
+    val settingsState by settingsViewModel.uiState.collectAsStateWithLifecycle()
     var notificationPermission by remember { mutableStateOf(
         ActivityCompat.checkSelfPermission(context, POST_NOTIFICATIONS) == PERMISSION_GRANTED
     ) }
@@ -237,6 +240,30 @@ fun HomePage(
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
                 }
+            } else if (!settingsState.whitelistPromptSeen) {
+                LGAlertDialog(
+                    properties = DialogProperties(
+                        dismissOnBackPress = true,
+                        dismissOnClickOutside = true,
+                    ),
+                    onDismiss = { settingsViewModel.discardWhitelistPrompt() },
+                    title = stringResource(id = R.string.whitelist_apps),
+                    buttons = {
+                        TextButton(
+                            onClick = {
+                                settingsViewModel.discardWhitelistPrompt()
+                            }
+                        ) {
+                            Text(stringResource(id = R.string.understood))
+                        }
+                    }
+                ) {
+                    Text(
+                        text = stringResource(R.string.whitelist_prompt_desc),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                }
             }
 
             Column(
@@ -248,7 +275,11 @@ fun HomePage(
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Text( text = stringResource(id = R.string.no_supported_player), style = MaterialTheme.typography.headlineSmall )
+                        Text(
+                            text = stringResource(id = R.string.no_supported_player),
+                            style = MaterialTheme.typography.headlineSmall,
+                            textAlign = TextAlign.Center,
+                        )
                         if (!notificationPermission) {
                             Text(
                                 text = stringResource(id = R.string.notification_post_permission_not_granted).uppercase(),

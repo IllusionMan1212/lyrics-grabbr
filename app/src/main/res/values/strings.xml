@@ -25,6 +25,8 @@
     <string name="notification_post_permission_desc">LyricsGrabbr requires notification permissions to start a foreground service for the purpose of listening to music notifications, and cannot function without it.</string>
     <string name="notification_post_permission_not_granted">Notification permission is not granted, the app will not function properly</string>
     <string name="grant_permission">Grant Permission</string>
+    <string name="understood">Understood</string>
+    <string name="whitelist_prompt_desc">The application operates on a whitelist basis. This gives you control over which apps we\'ll listen to and also reduces noise for the application.\nYou may control the whitelist from the settings.</string>
 
     <!--  Settings  -->
     <string name="settings">Settings</string>

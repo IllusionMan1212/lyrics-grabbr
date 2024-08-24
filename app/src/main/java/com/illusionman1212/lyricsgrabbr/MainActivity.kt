@@ -116,6 +116,7 @@ class MainActivity : AppCompatActivity() {
                                     navController.navigate(Routes.Lyrics.route)
                                 },
                                 lyricsViewModel = lyricsViewModel,
+                                settingsViewModel = settingsViewModel,
                                 goBack = { finish() },
                                 lastNotification = lastNotification,
                             )

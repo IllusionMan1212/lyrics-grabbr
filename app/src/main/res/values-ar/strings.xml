@@ -26,6 +26,8 @@
     <string name="notification_post_permission_desc">يتطلب هذا التطبيق أذونات الإشعارات لبدء خدمة مقدمة بغرض الاستماع إلى إشعارات الموسيقى، ولا يمكن أن يعمل بدونها.</string>
     <string name="notification_post_permission_not_granted">لم يتم منح إذن الإشعارات، لن يعمل التطبيق بشكل صحيح</string>
     <string name="grant_permission">منح الإذن</string>
+    <string name="understood">مفهوم</string>
+    <string name="whitelist_prompt_desc">يعمل التطبيق على أساس القائمة البيضاء. وهذا يمنحك التحكم في التطبيقات التي سنستمع إليها ويقلل أيضًا من التشويش على التطبيق.\nيمكنك التحكم في القائمة البيضاء من الإعدادات</string>
 
     <!--  Settings  -->
     <string name="settings">الإعدادات</string>

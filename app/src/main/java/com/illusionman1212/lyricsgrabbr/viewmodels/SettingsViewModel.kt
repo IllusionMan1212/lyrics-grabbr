@@ -31,6 +31,7 @@ data class SettingsState(
     val applications: Map<String, AppInfo> = emptyMap(),
     val whitelistSearchQuery: String = "",
     val keepScreenOn: Boolean = false,
+    val whitelistPromptSeen: Boolean = true,
 )
 
 class SettingsViewModel(private val settingsPrefsRepo: SettingsPreferencesRepository, context: Context): ViewModel() {
@@ -45,6 +46,12 @@ class SettingsViewModel(private val settingsPrefsRepo: SettingsPreferencesReposi
     fun setTheme(theme: Theme) {
         viewModelScope.launch(Dispatchers.IO) {
             settingsPrefsRepo.setTheme(theme)
+        }
+    }
+
+    fun discardWhitelistPrompt() {
+        viewModelScope.launch(Dispatchers.IO) {
+            settingsPrefsRepo.discardWhitelistPrompt()
         }
     }
 
@@ -157,6 +164,7 @@ class SettingsViewModel(private val settingsPrefsRepo: SettingsPreferencesReposi
                     state.copy(
                         appTheme = it.appTheme,
                         keepScreenOn = it.keepScreenOn,
+                        whitelistPromptSeen = it.whitelistPromptSeen,
                     )
                 }
             }
