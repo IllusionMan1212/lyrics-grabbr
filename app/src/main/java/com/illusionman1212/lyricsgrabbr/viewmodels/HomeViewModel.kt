@@ -1,5 +1,6 @@
 package com.illusionman1212.lyricsgrabbr.viewmodels
 
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -101,12 +102,12 @@ class HomeViewModel(private val homeRepository: HomeRepository): ViewModel() {
         }
     }
 
-    fun makeRequestToGenius(song: String, artist: String) {
+    fun makeRequestToGenius(context: Context, song: String, artist: String) {
         viewModelScope.launch {
             _uiState.update { HomeState(true, uiState.value.results, uiState.value.notification, null) }
 
             withContext(Dispatchers.IO) {
-                val (res, isSuccess) = homeRepository.makeSearchRequest(song, artist)
+                val (res, isSuccess) = homeRepository.makeSearchRequest(context, song, artist)
                 if (isSuccess) {
                     val results = json.decodeFromString(SearchResultsResponse.serializer(), res!!).all.map {
                         SearchResult(

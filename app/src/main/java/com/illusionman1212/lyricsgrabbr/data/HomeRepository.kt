@@ -10,6 +10,7 @@ import com.illusionman1212.lyricsgrabbr.utils.await
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import okio.IOException
+import org.jsoup.SerializationException
 import java.net.SocketTimeoutException
 
 @Serializable
@@ -31,7 +32,7 @@ class HomeRepository(private val context: Context) {
         return pkgs.contains(packageName)
     }
 
-    suspend fun makeSearchRequest(song: String, artist: String): Pair<String?, Boolean> {
+    suspend fun makeSearchRequest(lContext: Context, song: String, artist: String): Pair<String?, Boolean> {
         val builder = Uri.Builder()
         val url = builder.scheme("https")
             .authority("api.illusionman1212.com")
@@ -47,11 +48,23 @@ class HomeRepository(private val context: Context) {
             ).await()
 
             if (!res.isSuccessful) {
-                val errRes = json.decodeFromString(ErrorResponse.serializer(), res.body!!.string())
+                if (res.code >= 500) {
+                    return Pair(lContext.resources.getString(R.string.internal_server_error), false)
+                }
 
-                // matches is only null if there's an error. otherwise it's 0 when there are no results
-                if (errRes.matches == null) {
-                    return Pair(context.resources.getString(R.string.generic_error), false)
+                if (res.body?.contentType()?.type != "text" && res.body?.contentType()?.subtype != "json") {
+                    return Pair(lContext.resources.getString(R.string.invalid_json), false)
+                }
+
+                try {
+                    val errRes = json.decodeFromString(ErrorResponse.serializer(), res.body!!.string())
+
+                    // matches is only null if there's an error. otherwise it's 0 when there are no results
+                    if (errRes.matches == null) {
+                        return Pair(lContext.resources.getString(R.string.generic_error), false)
+                    }
+                } catch (e: IllegalArgumentException) {
+                    return Pair(lContext.resources.getString(R.string.failed_to_map_json), false)
                 }
 
                 return Pair(null, false)
@@ -60,10 +73,10 @@ class HomeRepository(private val context: Context) {
             return Pair(res.body?.string(), true)
         } catch (e: IOException) {
             if (e.cause is SocketTimeoutException) {
-                return Pair(context.resources.getString(R.string.timeout), false)
+                return Pair(lContext.resources.getString(R.string.timeout), false)
             }
 
-            return Pair(context.resources.getString(R.string.generic_error), false)
+            return Pair(lContext.resources.getString(R.string.generic_error), false)
         }
     }
 }

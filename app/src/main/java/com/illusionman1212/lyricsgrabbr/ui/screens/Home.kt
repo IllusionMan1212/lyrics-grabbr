@@ -155,7 +155,7 @@ fun HomePage(
         if (song != null && song.title != uiState.notification?.title && song.artist != uiState.notification?.artist) {
             homeViewModel.setSong(song)
 
-            homeViewModel.makeRequestToGenius(song.title, song.artist)
+            homeViewModel.makeRequestToGenius(context, song.title, song.artist)
         }
     }
 
@@ -305,7 +305,7 @@ fun HomePage(
                                         )
                                         FilledTonalButton(
                                             onClick = {
-                                                homeViewModel.makeRequestToGenius(song.title, song.artist)
+                                                homeViewModel.makeRequestToGenius(context, song.title, song.artist)
                                             }
                                         ) {
                                             Text(stringResource(id = R.string.retry))

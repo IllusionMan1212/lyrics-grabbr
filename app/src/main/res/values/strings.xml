@@ -6,6 +6,9 @@
     <string name="cancel">Cancel</string>
     <string name="timeout">Request has timed out, try again later</string>
     <string name="generic_error">An error has occurred, try again later</string>
+    <string name="internal_server_error">Internal server error. Make sure your geniURL server is running if self-hosting or contact your hoster.</string>
+    <string name="invalid_json">Response was not valid JSON</string>
+    <string name="failed_to_map_json">Failed to map decoded JSON to internal type.</string>
     <string name="retry">Retry</string>
 
     <!--  Home  -->

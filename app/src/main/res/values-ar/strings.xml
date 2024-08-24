@@ -7,6 +7,9 @@
     <string name="cancel">إلغاء</string>
     <string name="timeout">لقد انتهت مهلة الطلب، حاول مرة أخرى لاحقًا</string>
     <string name="generic_error">لقد حدث خطأ، حاول مرة أخرى لاحقاً</string>
+    <string name="internal_server_error">تأكد من تشغيل خادم geniURL الخاص بك إذا كنت تستضيف ذاتيًا أو اتصل بمضيفك.</string>
+    <string name="invalid_json">الاستجابة لم تكن JSON صالحة</string>
+    <string name="failed_to_map_json">فشل تعيين JSON المفكك إلى النوع الداخلي</string>
     <string name="retry">أعد المحاولة</string>
 
     <!--  Home  -->
