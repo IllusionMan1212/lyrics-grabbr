@@ -31,6 +31,7 @@ data class SettingsState(
     val applications: Map<String, AppInfo> = emptyMap(),
     val whitelistSearchQuery: String = "",
     val keepScreenOn: Boolean = false,
+    val geniURLbaseURL: String = "",
     val whitelistPromptSeen: Boolean = true,
 )
 
@@ -52,6 +53,15 @@ class SettingsViewModel(private val settingsPrefsRepo: SettingsPreferencesReposi
     fun discardWhitelistPrompt() {
         viewModelScope.launch(Dispatchers.IO) {
             settingsPrefsRepo.discardWhitelistPrompt()
+        }
+    }
+
+    fun setGeniURLBaseURL(baseUrl: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            settingsPrefsRepo.setGeniURLBaseURL(baseUrl)
+            _uiState.update { state ->
+                state.copy(geniURLbaseURL = baseUrl)
+            }
         }
     }
 
@@ -165,6 +175,7 @@ class SettingsViewModel(private val settingsPrefsRepo: SettingsPreferencesReposi
                         appTheme = it.appTheme,
                         keepScreenOn = it.keepScreenOn,
                         whitelistPromptSeen = it.whitelistPromptSeen,
+                        geniURLbaseURL = it.geniURLbaseURL,
                     )
                 }
             }

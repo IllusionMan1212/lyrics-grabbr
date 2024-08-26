@@ -4,6 +4,7 @@
     <!--  General  -->
     <string name="go_back">Go Back</string>
     <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
     <string name="timeout">Request has timed out, try again later</string>
     <string name="generic_error">An error has occurred, try again later</string>
     <string name="internal_server_error">Internal server error. Make sure your geniURL server is running if self-hosting or contact your hoster.</string>
@@ -46,6 +47,8 @@
     <string name="keep_device_awake_title">Keep device awake</string>
     <string name="keep_device_awake_desc">Keep device awake on lyrics page (Increases battery usage)</string>
     <string name="screen_will_stay_on">Screen Will Stay On</string>
+    <string name="api_base_url">API Base URL</string>
+    <string name="base_url">Base URL</string>
 
     <!--  Lyrics  -->
     <string name="instrumental">This song is an instrumental</string>

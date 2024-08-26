@@ -2,6 +2,7 @@ package com.illusionman1212.lyricsgrabbr.data
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import com.illusionman1212.lyricsgrabbr.R
 import com.illusionman1212.lyricsgrabbr.data.network.GET
@@ -32,11 +33,9 @@ class HomeRepository(private val context: Context) {
         return pkgs.contains(packageName)
     }
 
-    suspend fun makeSearchRequest(lContext: Context, song: String, artist: String): Pair<String?, Boolean> {
-        val builder = Uri.Builder()
-        val url = builder.scheme("https")
-            .authority("api.illusionman1212.com")
-            .appendPath("lyrics")
+    suspend fun makeSearchRequest(lContext: Context, baseUrl: String, song: String, artist: String): Pair<String?, Boolean> {
+        val url = Uri.parse(baseUrl)
+            .buildUpon()
             .appendPath("search")
             .appendQueryParameter("q", "$song $artist")
             .appendQueryParameter("disableFuzzy", "true")
@@ -76,7 +75,7 @@ class HomeRepository(private val context: Context) {
                 return Pair(lContext.resources.getString(R.string.timeout), false)
             }
 
-            return Pair(lContext.resources.getString(R.string.generic_error), false)
+            return Pair(e.message, false)
         }
     }
 }

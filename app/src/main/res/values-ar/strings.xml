@@ -5,6 +5,7 @@
     <!--  General  -->
     <string name="go_back">رجوع</string>
     <string name="cancel">إلغاء</string>
+    <string name="confirm">تأكيد</string>
     <string name="timeout">لقد انتهت مهلة الطلب، حاول مرة أخرى لاحقًا</string>
     <string name="generic_error">لقد حدث خطأ، حاول مرة أخرى لاحقاً</string>
     <string name="internal_server_error">تأكد من تشغيل خادم geniURL الخاص بك إذا كنت تستضيف ذاتيًا أو اتصل بمضيفك.</string>
@@ -47,6 +48,8 @@
     <string name="keep_device_awake_title">أبق الجهاز مستيقظا</string>
     <string name="keep_device_awake_desc">أبق الجهاز مستيقظا على صفحة كلمات الأغاني (يزيد من استخدام البطارية)</string>
     <string name="screen_will_stay_on">ستبقى الشاشة على قيد التشغيل</string>
+    <string name="api_base_url">عنوان URL الأساسي لواجهة برمجة التطبيقات (API)</string>
+    <string name="base_url">عنوان URL الأساسي</string>
 
     <!--  Lyrics  -->
     <string name="instrumental">هذه الأغنية موسيقية</string>

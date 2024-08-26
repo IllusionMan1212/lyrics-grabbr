@@ -11,9 +11,11 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.illusionman1212.lyricsgrabbr.LGApp
 import com.illusionman1212.lyricsgrabbr.NotificationEvent
 import com.illusionman1212.lyricsgrabbr.data.HomeRepository
+import com.illusionman1212.lyricsgrabbr.data.SettingsPreferencesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -85,7 +87,7 @@ data class HomeState(
     val error: String? = null,
 )
 
-class HomeViewModel(private val homeRepository: HomeRepository): ViewModel() {
+class HomeViewModel(private val homeRepository: HomeRepository, private val settingsRepository: SettingsPreferencesRepository): ViewModel() {
     private val _uiState = MutableStateFlow(HomeState())
     val uiState = _uiState.asStateFlow()
     private val json = Json {
@@ -107,7 +109,8 @@ class HomeViewModel(private val homeRepository: HomeRepository): ViewModel() {
             _uiState.update { HomeState(true, uiState.value.results, uiState.value.notification, null) }
 
             withContext(Dispatchers.IO) {
-                val (res, isSuccess) = homeRepository.makeSearchRequest(context, song, artist)
+                val baseUrl = settingsRepository.preferences.first().geniURLbaseURL
+                val (res, isSuccess) = homeRepository.makeSearchRequest(context, baseUrl, song, artist)
                 if (isSuccess) {
                     val results = json.decodeFromString(SearchResultsResponse.serializer(), res!!).all.map {
                         SearchResult(
@@ -136,7 +139,7 @@ class HomeViewModel(private val homeRepository: HomeRepository): ViewModel() {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as LGApp)
-                HomeViewModel(application.homeRepository)
+                HomeViewModel(application.homeRepository, application.settingsPreferencesRepository)
             }
         }
     }

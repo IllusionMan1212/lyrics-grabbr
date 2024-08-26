@@ -1,5 +1,6 @@
 package com.illusionman1212.lyricsgrabbr.ui.screens
 
+import android.util.Patterns
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ScreenLockPortrait
+import androidx.compose.material.icons.outlined.Cloud
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Translate
 import androidx.compose.material3.Icon
@@ -27,6 +29,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -96,6 +99,7 @@ fun SettingsPage(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Appearance(viewModel, uiState)
+            geniURL(viewModel, uiState)
             Listening(navigateToWhitelist)
             PowerManagement(viewModel, uiState)
         }
@@ -182,6 +186,63 @@ private fun PowerManagement(viewModel: SettingsViewModel, uiState: SettingsState
         ) {
             viewModel.toggleKeepScreenOn()
         }
+    }
+}
+
+@Composable
+private fun geniURL(viewModel: SettingsViewModel, uiState: SettingsState) {
+    var dialogOpen by remember { mutableStateOf(false) }
+
+    SettingGroup(title = "geniURL") {
+        DialogSetting(
+            title = stringResource(id = R.string.api_base_url),
+            value = uiState.geniURLbaseURL,
+            icon = Icons.Outlined.Cloud,
+            onClick = { dialogOpen = true }
+        )
+    }
+
+    if (dialogOpen) {
+        BaseURLDialog(
+            uiState = uiState,
+            viewModel = viewModel,
+            onDismiss = { dialogOpen = false },
+        )
+    }
+}
+
+@Composable
+private fun BaseURLDialog(uiState: SettingsState, viewModel: SettingsViewModel, onDismiss: () -> Unit) {
+    var value by remember { mutableStateOf(uiState.geniURLbaseURL) }
+    var isValidUrl by remember { mutableStateOf(true) }
+
+    LGAlertDialog(
+        onDismiss = onDismiss,
+        title = stringResource(id = R.string.base_url),
+        buttons = {
+            TextButton(
+                onClick = {
+                    viewModel.setGeniURLBaseURL(value)
+                    onDismiss()
+                },
+                enabled = isValidUrl
+            ) {
+                Text(stringResource(id = R.string.confirm))
+            }
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(id = R.string.cancel))
+            }
+        },
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        TextField(
+            value = value,
+            isError = !isValidUrl,
+            onValueChange = { newValue ->
+                isValidUrl = Patterns.WEB_URL.matcher(newValue.lowercase()).matches() && newValue.startsWith("http", true)
+                value = newValue
+            },
+        )
     }
 }
 
