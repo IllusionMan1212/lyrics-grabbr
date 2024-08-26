@@ -1,0 +1,4 @@
+- Fix app crash when geniURL instance is down.
+- Show a one-time notice related to whitelisting apps.
+- Added a setting to allow for changing the geniURL instance.
+- German translation
